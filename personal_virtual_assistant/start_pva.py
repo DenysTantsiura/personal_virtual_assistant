@@ -1,6 +1,6 @@
 """ rearch...
 NEXT NEED more TESTS!  + split to modules and... and next function for new field  ! MAP_ALL
-lines 91, 1307, 
+lines 91, 1307, !!!!!!!!!!!!!!!!!!!!!!!!! 
 
 -help for each command (from docstrings?)
 -split to modules
@@ -13,7 +13,21 @@ lines 91, 1307,
 import sys
 from typing import NoReturn
 
-from personal_virtual_assistant import pva
+from system import *
+## or Implicitly necessary import AddressBook:
+# from system.command_parser import parser
+# from system.constant_config import (
+#     AMBUSH,
+#     DEFAULT_FILE_ADDRESS_BOOK,
+#     WARNING_MESSAGE, 
+#     OTHER_MESSAGE,
+# )
+# from system.handlers import main_handler
+# from system.serialization import (
+#     helper_try_load_file,
+#     helper_try_open_file,
+# )
+
 
 def main() -> NoReturn:
     """The main function of launching a helper console bot that 

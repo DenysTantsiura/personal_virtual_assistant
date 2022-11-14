@@ -25,7 +25,7 @@ def helper_try_open_file(path_file: str) -> str:
 
         while os.path.isdir(path_file):
 
-            path_file = os.path.join(path_file.parent, TO_NEXT_FILE_NAME + path_file.name)
+            path_file = os.path.join(os.path.dirname(path_file), TO_NEXT_FILE_NAME + os.path.basename(path_file))
 
     return path_file
 
@@ -78,7 +78,7 @@ def helper_try_load_file(path_file: str) -> Union[AddressBook, str]:
         contact_dictionary = AddressBook()
 
     while os.path.exists(path_file):
-        path_file = os.path.join(path_file.parent, TO_NEXT_FILE_NAME + path_file.name)
+        path_file = os.path.join(os.path.dirname(path_file), TO_NEXT_FILE_NAME + os.path.basename(path_file))
 
     return contact_dictionary, path_file
 
