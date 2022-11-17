@@ -10,8 +10,8 @@ class AddressBook(UserDict):
     """A class of Address book."""
 
     def __str__(self) -> str:
-        ABOOK0 = OTHER_MESSAGE.get('ABook', [AMBUSH])[0]
-        return f'{ABOOK0}{self.data})'
+        abook0 = OTHER_MESSAGE.get('ABook', [AMBUSH])[0]
+        return f'{abook0}{self.data})'
 
     def add_record(self, record) -> None:  # record: Record
         """Adds a new record to the address book dictionary."""

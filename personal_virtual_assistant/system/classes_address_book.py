@@ -150,16 +150,16 @@ class Record:
                 self.add_phone(phone)
 
     def __str__(self) -> str:
-        NAME = OTHER_MESSAGE.get('Record', [AMBUSH])[0]
-        PHONES = OTHER_MESSAGE.get('Record', [AMBUSH]*2)[1]
-        BIRTHDAY = OTHER_MESSAGE.get('Record', [AMBUSH]*3)[2]
-        EMAIL = OTHER_MESSAGE.get('Record', [AMBUSH]*4)[3]
-        DETAILS = OTHER_MESSAGE.get('Record', [AMBUSH]*5)[4]
-        RELATED = OTHER_MESSAGE.get('Record', [AMBUSH]*6)[5]
+        name_ = OTHER_MESSAGE.get('Record', [AMBUSH])[0]
+        phones_ = OTHER_MESSAGE.get('Record', [AMBUSH]*2)[1]
+        birthday_ = OTHER_MESSAGE.get('Record', [AMBUSH]*3)[2]
+        email_ = OTHER_MESSAGE.get('Record', [AMBUSH]*4)[3]
+        details_ = OTHER_MESSAGE.get('Record', [AMBUSH]*5)[4]
+        related_ = OTHER_MESSAGE.get('Record', [AMBUSH]*6)[5]
 
-        return f'{NAME}{self.name}{PHONES}{self.phones}{BIRTHDAY}'\
-            f'{self.birthday}{EMAIL}{self.emails}{DETAILS}{self.details}'\
-            f'{RELATED}{self.related_info})'
+        return f'{name_}{self.name}{phones_}{self.phones}{birthday_}'\
+            f'{self.birthday}{email_}{self.emails}{details_}{self.details}'\
+            f'{related_}{self.related_info})'
 
     def add_birthday(self, birthday: str) -> tuple:
         """Adds a new entry for the user's birthday to the address book."""
@@ -171,9 +171,9 @@ class Record:
             return True,
 
         else:
-            BIRTHDAY0 = OTHER_MESSAGE.get('RBirthday', [AMBUSH])[0]
-            BIRTHDAY1 = OTHER_MESSAGE.get('RBirthday', [AMBUSH]*2)[1]
-            return False, f'{BIRTHDAY0}\"{self.name.value}\"{BIRTHDAY1}'
+            birthday0 = OTHER_MESSAGE.get('RBirthday', [AMBUSH])[0]
+            birthday1 = OTHER_MESSAGE.get('RBirthday', [AMBUSH]*2)[1]
+            return False, f'{birthday0}\"{self.name.value}\"{birthday1}'
 
     def add_phone(self, phone_new: str) -> bool:
         """Adds a new entry for the user's phone to the address book."""
@@ -184,8 +184,8 @@ class Record:
 
             if phone_new1 == phone.value:
                 
-                PHONE0 = OTHER_MESSAGE.get('RPhone', [AMBUSH])[0]
-                print(f'\"{phone_new1}\"{PHONE0}\"{self.name.value}\"')
+                phone0 = OTHER_MESSAGE.get('RPhone', [AMBUSH])[0]
+                print(f'\"{phone_new1}\"{phone0}\"{self.name.value}\"')
 
                 return False
 
@@ -197,9 +197,9 @@ class Record:
         """Modify an existing user's birthday entry in the address book."""
         if not self.birthday:
             
-            BIRTHDAY2 = OTHER_MESSAGE.get('RBirthday', [AMBUSH]*3)[2]
-            BIRTHDAY3 = OTHER_MESSAGE.get('RBirthday', [AMBUSH]*4)[3]
-            return False, f'{BIRTHDAY2}\"{self.name.value}\"{BIRTHDAY3}'
+            birthday2 = OTHER_MESSAGE.get('RBirthday', [AMBUSH]*3)[2]
+            birthday3 = OTHER_MESSAGE.get('RBirthday', [AMBUSH]*4)[3]
+            return False, f'{birthday2}\"{self.name.value}\"{birthday3}'
 
         else:
 
@@ -217,15 +217,15 @@ class Record:
         for phone in self.phones:
 
             if phone.value == phone_new:  # new number already in record
-                PHONE0 = OTHER_MESSAGE.get('RPhone', [AMBUSH])[0]
-                return False, f'\"{phone_new}\"{PHONE0}\"{self.name.value}\"'
+                phone0 = OTHER_MESSAGE.get('RPhone', [AMBUSH])[0]
+                return False, f'\"{phone_new}\"{phone0}\"{self.name.value}\"'
 
             if phone.value == phone_to_change:  # old number not exist in record
                 verdict = True
 
         if not verdict:
-            PHONE2 = OTHER_MESSAGE.get('RPhone', [AMBUSH]*3)[2]
-            return verdict, f'\"{phone_to_change}\"{PHONE2}\"{self.name.value}\"'
+            phone2 = OTHER_MESSAGE.get('RPhone', [AMBUSH]*3)[2]
+            return verdict, f'\"{phone_to_change}\"{phone2}\"{self.name.value}\"'
 
         for index, phone in enumerate(self.phones):
 
@@ -272,8 +272,8 @@ class Record:
 
                 return True
 
-        PHONE2 = OTHER_MESSAGE.get('RPhone', [AMBUSH]*3)[2]      
-        print(f'\"{phone_to_remove}\"{PHONE2}\"{self.name.value}\"')
+        phone2 = OTHER_MESSAGE.get('RPhone', [AMBUSH]*3)[2]
+        print(f'\"{phone_to_remove}\"{phone2}\"{self.name.value}\"')
 
     def years_old(self) -> int:
         """Calculate the number of full years of the user on the next birthday."""

@@ -147,5 +147,5 @@ __all__ = [
     'validation_remove_birthday',
     'validation_remove_phone',
     'validation_show',
-    'validation_showall',
+    'validation_show_all',
 ]

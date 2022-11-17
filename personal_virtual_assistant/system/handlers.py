@@ -113,7 +113,7 @@ def handler_add_phone(user_command: List[str], contact_dictionary: AddressBook, 
 @ input_error
 def handler_change(user_command: List[str], contact_dictionary: AddressBook, path_file: str) -> str:
     """"change ...": The bot stores the new phone number of the existing 
-    ontact in contact dictionary and save it in file(path_file). 
+    contact in contact dictionary and save it in file(path_file).
     Instead of ... the user enters the name and phone numbers (current and new), 
     necessarily with a space.
 
@@ -180,9 +180,9 @@ def handler_find(user_command: List[str], contact_dictionary: AddressBook, _=Non
     matches the entered one or more(with an OR setting) string without space(' ').
 
         Parameters:
-            user_command (List[str]): List of user command (strimg(s) for searching).
+            user_command (List[str]): List of user command (string(s) for searching).
             contact_dictionary (AddressBook): Instance of AddressBook.
-            path_file (str): Is there path and filename of address book.
+            _: path_file (str) - Is there path and filename of address book.
 
         Returns:
             found_list (list): Answer for the user - list of string of found users.
@@ -285,11 +285,11 @@ def handler_remove_birthday(user_command: List[str], contact_dictionary: Address
                 return WARNING_MESSAGE.get('unsuccessful save', AMBUSH)
 
         else:
-            BIRTHDAY2 = OTHER_MESSAGE.get('RBirthday', [AMBUSH]*3)[2]
-            BIRTHDAY3 = OTHER_MESSAGE.get('RBirthday', [AMBUSH]*4)[3]
-            return f'{BIRTHDAY2}\"{name}\"{BIRTHDAY3}'
+            birthday2 = OTHER_MESSAGE.get('RBirthday', [AMBUSH]*3)[2]
+            birthday3 = OTHER_MESSAGE.get('RBirthday', [AMBUSH]*4)[3]
+            return f'{birthday2}\"{name}\"{birthday3}'
 
-    else:  # dublicat 'of except TheContactIsNotExist'
+    else:  # duplicate 'of except TheContactIsNotExist'
         return WARNING_MESSAGE.get('unknown name', AMBUSH)
 
 
@@ -323,12 +323,12 @@ def handler_remove_phone(user_command: List[str], contact_dictionary: AddressBoo
                     return WARNING_MESSAGE.get('unsuccessful save', AMBUSH)
 
             else:
-                PHONE2 = OTHER_MESSAGE.get('RPhone', [AMBUSH]*3)[2]
-                return f'\"{phone}\"{PHONE2}\"{name}\".'
+                phone2 = OTHER_MESSAGE.get('RPhone', [AMBUSH]*3)[2]
+                return f'\"{phone}\"{phone2}\"{name}\".'
 
         else:
-            PHONE1 = OTHER_MESSAGE.get('RPhone', [AMBUSH]*2)[1]
-            return f'{PHONE1}\"{name}\".\n'
+            phone1 = OTHER_MESSAGE.get('RPhone', [AMBUSH]*2)[1]
+            return f'{phone1}\"{name}\".\n'
 
     else:
         return WARNING_MESSAGE.get('unknown name', AMBUSH)
@@ -392,25 +392,26 @@ def handler_help(*_) -> str:
     return ''.join(all_commands_list)
 
 
-ALL_COMMAND = {'hello': handler_hello,
-                'add': handler_add,
-                'add_phone': handler_add_phone,
-                'change': handler_change,
-                'phone': handler_phone,
-                'show_all': handler_show_all,
-                'good_bye': handler_exit,
-                'close': handler_exit,
-                'exit': handler_exit,
-                'show': handler_show,
-                'add_birthday': handler_add_birthday,
-                'change_birthday': handler_change_birthday,
-                'find': handler_find,
-                'remove': handler_remove,
-                'remove_phone': handler_remove_phone,
-                'remove_birthday': handler_remove_birthday, 
-                'help': handler_help,
-                '?': handler_help,
-                }
+ALL_COMMAND = {
+    'hello': handler_hello,
+    'add': handler_add,
+    'add_phone': handler_add_phone,
+    'change': handler_change,
+    'phone': handler_phone,
+    'show_all': handler_show_all,
+    'good_bye': handler_exit,
+    'close': handler_exit,
+    'exit': handler_exit,
+    'show': handler_show,
+    'add_birthday': handler_add_birthday,
+    'change_birthday': handler_change_birthday,
+    'find': handler_find,
+    'remove': handler_remove,
+    'remove_phone': handler_remove_phone,
+    'remove_birthday': handler_remove_birthday,
+    'help': handler_help,
+    '?': handler_help,
+    }
 
 
 def main_handler(user_command: List[str], contact_dictionary: AddressBook, path_file: str) -> Union[str, list]:
@@ -427,6 +428,5 @@ def main_handler(user_command: List[str], contact_dictionary: AddressBook, path_
             The result of the corresponding function (list): The result of the\
                  certain function is a string or a list of strings.
     """
-    return ALL_COMMAND.get(user_command[0], lambda *args: None)(user_command, \
-        contact_dictionary, path_file) \
+    return ALL_COMMAND.get(user_command[0], lambda *args: None)(user_command, contact_dictionary, path_file) \
         or OTHER_MESSAGE.get('Unknown', [AMBUSH])[0]

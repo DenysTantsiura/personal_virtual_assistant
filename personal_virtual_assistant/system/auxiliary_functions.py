@@ -55,22 +55,21 @@ def forming_user_information(record: Record) -> str:
             volume (str): Formed information about the user from record.
     """
     volume = ''
-    FOUND_P1 = OTHER_MESSAGE.get('found', [AMBUSH])[1]
-    FOUND_P2 = OTHER_MESSAGE.get('found', [AMBUSH])[2]
-    FOUND_P3 = OTHER_MESSAGE.get('found', [AMBUSH])[3]
-    FOUND_P4 = OTHER_MESSAGE.get('found', [AMBUSH])[4]
-    FOUND_P5 = OTHER_MESSAGE.get('found', [AMBUSH])[5]
+    found_p1 = OTHER_MESSAGE.get('found', [AMBUSH])[1]
+    found_p2 = OTHER_MESSAGE.get('found', [AMBUSH])[2]
+    found_p3 = OTHER_MESSAGE.get('found', [AMBUSH])[3]
+    found_p4 = OTHER_MESSAGE.get('found', [AMBUSH])[4]
+    found_p5 = OTHER_MESSAGE.get('found', [AMBUSH])[5]
 
     if record.birthday:
-        volume += f'\n\n{record.name}{FOUND_P1}{record.birthday}' \
-        f'{FOUND_P2}{record.days_to_birthday()}'\
-        f'{FOUND_P3}{record.years_old()}{FOUND_P4}'
+        volume += f'\n\n{record.name}{found_p1}{record.birthday}' \
+            f'{found_p2}{record.days_to_birthday()}'\
+            f'{found_p3}{record.years_old()}{found_p4}'
 
     else:
-        volume += f'\n\n{record.name}{FOUND_P5}'
+        volume += f'\n\n{record.name}{found_p5}'
     
     for phone in record.phones:
         volume += f'{phone.value}; '
 
     return volume
-

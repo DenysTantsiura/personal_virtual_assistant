@@ -1,6 +1,5 @@
 from datetime import datetime
 import re
-from typing import Union
 
 from .address_book import AddressBook
 from .constant_config import (
@@ -83,8 +82,8 @@ def validation_add_phone(user_command: list, contact_dictionary: AddressBook) ->
         raise ThePhoneIsIncorrect
 
 
-def validation_birthday(user_command: list, contact_dictionary: AddressBook) -> Union[str, None]:
-    """Check the input parameters. Return a message (str) about a discrepancy if it is detected."""
+def validation_birthday(user_command: list, contact_dictionary: AddressBook) -> None:
+    """Check the input parameters. Raise exception if it is detected."""
     name = user_command[1] if len(user_command) > 1 else None
 
     if not contact_dictionary:
@@ -241,7 +240,7 @@ def validation_show(user_command: list, contact_dictionary: AddressBook) -> None
         raise TheNameIsIncorrect
 
 
-def validation_showall(_, contact_dictionary: AddressBook) -> None:
+def validation_show_all(_, contact_dictionary: AddressBook) -> None:
     """Check the input parameters. Return a message (str) about a discrepancy if it is detected."""
     if not contact_dictionary:
         raise NoAddressBook
@@ -259,6 +258,6 @@ VALIDATION_FUNCTIONS = {
             'handler_remove_birthday': validation_remove_birthday,
             'handler_remove_phone': validation_remove_phone,
             'handler_show': validation_show,
-            'handler_show_all': validation_showall,
+            'handler_show_all': validation_show_all,
             # 'unknown': lambda *_: raise UnknownCommand,  # 'Unknown command...'
         }
