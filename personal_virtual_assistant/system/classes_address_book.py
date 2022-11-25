@@ -4,6 +4,7 @@ from typing import Union
 
 from .constant_config import (
     AMBUSH,
+    BIRTHDAY_FORMAT,
     PREFORMATING_PHONE, 
     PREFORMATING_EMAIL1, 
     PREFORMATING_EMAIL2, 
@@ -16,27 +17,27 @@ class Field:  # superclass for all base fields
     """A base class with a simple field."""
 
     def __init__(self):
-        self.__value = None
-        self.__bloke = None
+        self._value = None
+        self._bloke = None
 
     def __str__(self):
         return f'{self.value}'
 
     @property
     def value(self):
-        return self.__value
+        return self._value
 
     @value.setter
     def value(self, new_value: str):
-        self.__value = new_value
+        self._value = new_value
     
     @property
     def bloke(self):
-        return self.__bloke
+        return self._bloke
 
     @bloke.setter
     def bloke(self, new_bloke: str):
-        self.__bloke = new_bloke
+        self._bloke = new_bloke
 
 
 class Name(Field):
@@ -45,7 +46,16 @@ class Name(Field):
     def value(self, new_value: str):
 
         if new_value[0].isalpha():  # not in 'ьъыЫЬЪ\'"[]_0123456789!@$%^&*()-+?<>~`|\\/'
-            self._Field__value = new_value
+            self._value = new_value
+
+        else:
+            print(WARNING_MESSAGE.get('name', AMBUSH))
+    
+    @Field.bloke.setter
+    def bloke(self, new_bloke: str):
+
+        if new_bloke[0].isalpha():  # not in 'ьъыЫЬЪ\'"[]_0123456789!@$%^&*()-+?<>~`|\\/'
+            self._bloke = new_bloke
 
         else:
             print(WARNING_MESSAGE.get('name', AMBUSH))
@@ -55,10 +65,10 @@ class Birthday(Field):
     """Class of Birthday data."""
     @Field.value.setter
     def value(self, new_value: str):
-        birthday_data = datetime.strptime(new_value, '%Y-%m-%d')
+        birthday_data = datetime.strptime(new_value, BIRTHDAY_FORMAT)
 
         if birthday_data:
-            self._Field__value = birthday_data
+            self._value = birthday_data
 
         else:
             print(WARNING_MESSAGE.get('birthday', AMBUSH))
@@ -73,17 +83,17 @@ class Phone(Field):
     def value(self, new_value: str):
 
         if re.search(PREFORMATING_PHONE, new_value):
-            self._Field__value = self.__preformating(new_value)
+            self._value = self._preformating(new_value)
 
         else:
             print(WARNING_MESSAGE.get('phone', AMBUSH))
     
-    @Field.bloke.setter
-    def bloke(self, new_bloke: str):
-        self._Field__bloke = new_bloke
+    # @Field.bloke.setter
+    # def bloke(self, new_bloke: str):
+    #     self._bloke = new_bloke
 
     @staticmethod
-    def __preformating(value: str) -> str:
+    def _preformating(value: str) -> str:
         """Preformating of phone string into the form +dd(ddd)ddddddd."""
         value = value.replace('-', '').replace('(', '').replace(')', '')
 
@@ -95,13 +105,14 @@ class Phone(Field):
 
 class Details(Field):
     """Details information of user."""
-    @Field.value.setter
-    def value(self, new_value: str):
-        self._Field__value = new_value
+    # @Field.value.setter
+    # def value(self, new_value: str):
+    #     self._value = new_value
     
-    @Field.bloke.setter
-    def bloke(self, new_bloke: str):
-        self._Field__bloke = new_bloke
+    # @Field.bloke.setter
+    # def bloke(self, new_bloke: str):
+    #     self._bloke = new_bloke
+    pass
 
 
 class Email(Field):
@@ -111,25 +122,33 @@ class Email(Field):
 
         if re.search(PREFORMATING_EMAIL1, new_value) or\
              re.search(PREFORMATING_EMAIL2, new_value):
-            self._Field__value = self.new_value.strip()
+            self._value = self.new_value.strip()
 
         else:
             print(WARNING_MESSAGE.get('email', AMBUSH))
     
+    
     @Field.bloke.setter
     def bloke(self, new_bloke: str):
-        self._Field__bloke = new_bloke
+
+        if new_bloke[0].isalpha():  # not in 'ьъыЫЬЪ\'"[]_0123456789!@$%^&*()-+?<>~`|\\/'
+            self._bloke = new_bloke
+
+        else:
+            print(WARNING_MESSAGE.get('name', AMBUSH))
 
 
 class RelatedInformation(Field):
     """Related information of user."""
-    @Field.value.setter
-    def value(self, new_value: str):
-        self._Field__value = new_value
+    # @Field.value.setter
+    # def value(self, new_value: str):
+    #     self._value = new_value
 
-    @Field.bloke.setter
-    def bloke(self, new_bloke: str):
-        self._Field__bloke = new_bloke
+    # @Field.bloke.setter
+    # def bloke(self, new_bloke: str):
+    #     self._bloke = new_bloke
+    
+    pass
 
 
 class Record:
@@ -192,6 +211,24 @@ class Record:
         self.phones.append(phone_new1)
 
         return True
+    
+    def add_email(self, email_new: str) -> bool:
+        """Adds a new entry for the user's email to the address book."""
+        email_new1 = Email()
+        email_new1.value = email_new
+
+        for email in self.emails:
+
+            if email_new1 == email.value:
+                
+                email0 = OTHER_MESSAGE.get('REmail', [AMBUSH])[0]
+                print(f'\"{email_new1}\"{email0}\"{self.name.value}\"')
+
+                return False
+
+        self.emails.append(email_new1)
+
+        return True
 
     def change_birthday(self, birthday: str) -> tuple:
         """Modify an existing user's birthday entry in the address book."""
@@ -210,8 +247,8 @@ class Record:
 
     def change_phone(self, phone_to_change: str, phone_new: str) -> tuple:
         """Modify an existing user's phone entry in the address book."""
-        phone_to_change = Phone._Phone__preformating(phone_to_change)
-        phone_new = Phone._Phone__preformating(phone_new)
+        phone_to_change = Phone._preformating(phone_to_change)
+        phone_new = Phone._preformating(phone_new)
         verdict = False
 
         for phone in self.phones:
@@ -234,6 +271,33 @@ class Record:
                 phone_new_to.value = phone_new
                 self.phones.remove(phone)
                 self.phones.insert(index, phone_new_to)
+
+                return True,
+
+    def change_email(self, email_to_change: str, email_new: str) -> tuple:
+        """Modify an existing user's email entry in the address book."""
+        verdict = False
+
+        for email in self.emails:
+
+            if email.value == email_new:  # new email already in record
+                email0 = OTHER_MESSAGE.get('REmail', [AMBUSH])[0]
+                return False, f'\"{email_new}\"{email0}\"{self.name.value}\"'
+
+            if email.value == email_to_change:  # old email not exist in record
+                verdict = True
+
+        if not verdict:
+            email2 = OTHER_MESSAGE.get('REmail', [AMBUSH]*3)[2]
+            return verdict, f'\"{email_to_change}\"{email2}\"{self.name.value}\"'
+
+        for index, email in enumerate(self.emails):
+
+            if email.value == email_to_change:
+                email_new_to = Email()
+                email_new_to.value = email_new
+                self.emails.remove(email)
+                self.emails.insert(index, email_new_to)
 
                 return True,
 
@@ -263,7 +327,7 @@ class Record:
 
     def remove_phone(self, phone_to_remove: str) -> Union[bool, None]:
         """Deleting a phone entry from a user entry in the address book."""
-        phone_to_remove = Phone._Phone__preformating(phone_to_remove)
+        phone_to_remove = Phone._preformating(phone_to_remove)
 
         for phone in self.phones:
 
@@ -274,6 +338,18 @@ class Record:
 
         phone2 = OTHER_MESSAGE.get('RPhone', [AMBUSH]*3)[2]
         print(f'\"{phone_to_remove}\"{phone2}\"{self.name.value}\"')
+
+    def remove_email(self, email_to_remove: str) -> Union[bool, None]:
+        """Deleting a email entry from a user entry in the address book."""
+        for email in self.emails:
+
+            if email.value == email_to_remove:
+                self.emails.remove(email)
+
+                return True
+
+        email2 = OTHER_MESSAGE.get('REmail', [AMBUSH]*3)[2]
+        print(f'\"{email_to_remove}\"{email2}\"{self.name.value}\"')
 
     def years_old(self) -> int:
         """Calculate the number of full years of the user on the next birthday."""

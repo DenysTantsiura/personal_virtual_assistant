@@ -4,6 +4,7 @@ import re
 from .address_book import AddressBook
 from .constant_config import (
     AMBUSH,
+    BIRTHDAY_FORMAT,
     PREFORMATING_PHONE, 
     WARNING_MESSAGE, 
 )
@@ -100,7 +101,7 @@ def validation_birthday(user_command: list, contact_dictionary: AddressBook) -> 
 
     else:
         try:
-            datetime.strptime(user_command[2], '%Y-%m-%d')
+            datetime.strptime(user_command[2], BIRTHDAY_FORMAT)
 
         except ValueError:
             raise InvalidBirthday

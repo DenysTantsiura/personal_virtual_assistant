@@ -1,6 +1,8 @@
 
 
 AMBUSH = 'AMBUSH!'
+
+BIRTHDAY_FORMAT = '%Y-%m-%d'
 TO_NEXT_FILE_NAME = 'new_one_'
 DEFAULT_FILE_ADDRESS_BOOK = 'ABook.data'
 LIMIT_RECORDS_TO_DISPLAY = 10 
@@ -57,6 +59,7 @@ OTHER_MESSAGE = {
     'RBirthday': ['Birthday already recorded for ', '. You can change it.', 'Birthday not specified for ', \
                   '. You can add it.', ],
     'RPhone': [' already recorded for ', 'No phone(s) entry in record ', ' not specified in the contact ', ],
+    'REmail': [' already recorded for ', 'No email(s) entry in record ', ' not specified in the contact ', ],
     'ABook': ['AddressBook(Records:', ],
     'next_page': ['Press Enter for next Volume... ', ],
     'Bye': ['Good bye!', ],
