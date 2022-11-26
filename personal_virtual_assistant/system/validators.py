@@ -5,20 +5,25 @@ from .address_book import AddressBook
 from .constant_config import (
     AMBUSH,
     BIRTHDAY_FORMAT,
-    PREFORMATING_PHONE, 
+    PREFORMATING_PHONE,
+    PREFORMATING_EMAIL1,
+    PREFORMATING_EMAIL2, 
     WARNING_MESSAGE, 
 )
 from .except_classes import (
-    TheNameIsOmitted,
+    TheNameIsOmitted,  # alphabetical?
     TheContactIsExist,
     TheNameIsIncorrect,
+    TheEmailIsIncorrect,
     ThePhoneIsIncorrect,
+    TheNameAndEmailAreMissing,
     TheNameAndPhoneAreMissing,
     TheContactIsNotExist,
     NoAddressBook,
     TheNameAndBirthdayAreMissing,
     InvalidBirthdayEntry,
     InvalidBirthday,
+    TheNameAnd2EmailsAreMissing,
     TheNameAnd2PhonesAreMissing,
     NoSearchQuery,
     TheNameIsMissing,
@@ -53,6 +58,35 @@ def validation_add(user_command: list, contact_dictionary: AddressBook) ->\
 
         if phone_count < len(user_command[2:]):  # not phone_count:
             raise ThePhoneIsIncorrect
+
+
+def validation_add_email(user_command: list, contact_dictionary: AddressBook) -> None:
+    """Check the input parameters. Return a message (str) about a discrepancy if it is detected."""
+    name = user_command[1] if len(user_command) > 1 else None
+
+    if len(user_command) < 3:  # or not name:
+        raise TheNameAndEmailAreMissing
+
+    if name[0].isdigit() or not name[0].isalpha():
+        raise TheNameIsIncorrect
+
+    if name not in contact_dictionary:
+        raise TheContactIsNotExist
+
+    email_count = 0
+
+    for email_candidate in user_command[2:]:
+        email_matches = re.search(PREFORMATING_EMAIL1, email_candidate) or\
+             re.search(PREFORMATING_EMAIL2, email_candidate)
+        
+        if email_matches:
+            email_count += 1
+
+        else:
+            print(f'{email_candidate}', WARNING_MESSAGE.get('email', AMBUSH))
+
+    if email_count < len(user_command[2:]):  # not email_count:
+        raise TheEmailIsIncorrect
 
 
 def validation_add_phone(user_command: list, contact_dictionary: AddressBook) -> None:
@@ -136,6 +170,50 @@ def validation_change(user_command: list, contact_dictionary: AddressBook) -> \
         raise ThePhoneIsIncorrect
 
 
+def validation_change_email(user_command: list, contact_dictionary: AddressBook) -> \
+        None:
+    """Check the input parameters. Return a message (str) about a discrepancy if it is detected."""
+    name = user_command[1] if len(user_command) > 1 else None
+
+    if not contact_dictionary:
+        raise NoAddressBook
+
+    if len(user_command) < 4:  # or not name:
+        raise TheNameAnd2EmailsAreMissing
+
+    if name[0].isdigit() or not name[0].isalpha():
+        raise TheNameIsIncorrect
+
+    email_count = 0
+
+    for email_candidate in user_command[2:]:
+        email_matches = re.search(PREFORMATING_EMAIL1, email_candidate) or\
+             re.search(PREFORMATING_EMAIL2, email_candidate)
+        
+        if email_matches:
+            email_count += 1
+
+        else:
+            print(f'{email_candidate}', WARNING_MESSAGE.get('email', AMBUSH))
+
+    if email_count < len(user_command[2:]):  # not email_count:
+        raise TheEmailIsIncorrect
+
+
+def validation_email(user_command: list, contact_dictionary: AddressBook) -> None:
+    """Check the input parameters. Return a message (str) about a discrepancy if it is detected."""
+    name = user_command[1] if len(user_command) > 1 else None
+
+    if not contact_dictionary:
+        raise NoAddressBook
+
+    if not name:  # len(user_command) < 2 or not name:
+        raise TheNameIsMissing
+
+    if name[0].isdigit() or not name[0].isalpha():
+        raise TheNameIsIncorrect
+
+
 def validation_find(user_command: list, contact_dictionary: AddressBook) -> None:
     """Check the input parameters. Return a message (str) about a discrepancy if it is detected."""
     query = user_command[1] if len(user_command) > 1 else None
@@ -195,6 +273,39 @@ def validation_remove_birthday(user_command: list, contact_dictionary: AddressBo
         raise TheContactIsNotExist
 
 
+def validation_remove_email(user_command: list, contact_dictionary: AddressBook) -> \
+        None:
+    """Check the input parameters. Return a message (str) about a discrepancy if it is detected."""
+    name = user_command[1] if len(user_command) > 1 else None
+
+    if not contact_dictionary:
+        raise NoAddressBook
+
+    if not name:
+        raise TheNameIsMissing
+
+    if name[0].isdigit() or not name[0].isalpha():
+        raise TheNameIsIncorrect
+
+    if name not in contact_dictionary:
+        raise TheContactIsNotExist
+
+    email_count = 0
+
+    for email_candidate in user_command[2:]:
+        email_matches = re.search(PREFORMATING_EMAIL1, email_candidate) or\
+             re.search(PREFORMATING_EMAIL2, email_candidate)
+        
+        if email_matches:
+            email_count += 1
+
+        else:
+            print(f'{email_candidate}', WARNING_MESSAGE.get('email', AMBUSH))
+
+    if email_count < 2:  # len(user_command[2:])  # not email_count:
+        raise TheEmailIsIncorrect
+
+
 def validation_remove_phone(user_command: list, contact_dictionary: AddressBook) -> \
         None:
     """Check the input parameters. Return a message (str) about a discrepancy if it is detected."""
@@ -250,13 +361,17 @@ def validation_show_all(_, contact_dictionary: AddressBook) -> None:
 VALIDATION_FUNCTIONS = {
             'handler_add': validation_add,
             'handler_add_birthday': validation_birthday,
+            'handler_add_email': validation_add_email,
             'handler_add_phone': validation_add_phone,
             'handler_change': validation_change,
+            'handler_change_email': validation_change_email,
             'handler_change_birthday': validation_birthday,
             'handler_find': validation_find,
+            'handler_email': validation_email,
             'handler_phone': validation_phone,
             'handler_remove': validation_remove,
             'handler_remove_birthday': validation_remove_birthday,
+            'handler_remove_email': validation_remove_email,
             'handler_remove_phone': validation_remove_phone,
             'handler_show': validation_show,
             'handler_show_all': validation_show_all,

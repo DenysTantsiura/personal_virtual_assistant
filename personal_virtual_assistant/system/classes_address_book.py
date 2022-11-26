@@ -122,7 +122,7 @@ class Email(Field):
 
         if re.search(PREFORMATING_EMAIL1, new_value) or\
              re.search(PREFORMATING_EMAIL2, new_value):
-            self._value = self.new_value.strip()
+            self._value = new_value.strip()
 
         else:
             print(WARNING_MESSAGE.get('email', AMBUSH))

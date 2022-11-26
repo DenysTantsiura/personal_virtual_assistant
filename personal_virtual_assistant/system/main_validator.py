@@ -10,13 +10,16 @@ from .except_classes import (
     TheNameIsOmitted,  # alphabetical?
     TheContactIsExist,
     TheNameIsIncorrect,
+    TheEmailIsIncorrect,
     ThePhoneIsIncorrect,
+    TheNameAndEmailAreMissing,
     TheNameAndPhoneAreMissing,
     TheContactIsNotExist,
     NoAddressBook,
     TheNameAndBirthdayAreMissing,
     InvalidBirthdayEntry,
     InvalidBirthday,
+    TheNameAnd2EmailsAreMissing,
     TheNameAnd2PhonesAreMissing,
     NoSearchQuery,
     TheNameIsMissing,
@@ -48,8 +51,12 @@ def input_error(handler):
             return WARNING_MESSAGE.get('invalid name', AMBUSH)
         except ThePhoneIsIncorrect:
             return WARNING_MESSAGE.get('invalid phone', AMBUSH)
+        except TheEmailIsIncorrect:
+            return WARNING_MESSAGE.get('invalid email', AMBUSH)
         except TheNameAndPhoneAreMissing:
             return WARNING_MESSAGE.get('name and phone omitted', AMBUSH)
+        except TheNameAndEmailAreMissing:
+            return WARNING_MESSAGE.get('name and email omitted', AMBUSH)    
         except TheContactIsNotExist:
             return WARNING_MESSAGE.get('unknown name', AMBUSH)
         except NoAddressBook:
@@ -60,6 +67,8 @@ def input_error(handler):
             return WARNING_MESSAGE.get('invalid birthday entry', AMBUSH)
         except InvalidBirthday:
             return WARNING_MESSAGE.get('invalid birthday', AMBUSH)
+        except TheNameAnd2EmailsAreMissing:
+            return WARNING_MESSAGE.get('name and 2 emails omitted', AMBUSH)
         except TheNameAnd2PhonesAreMissing:
             return WARNING_MESSAGE.get('name and 2 phones omitted', AMBUSH)
         except NoSearchQuery:

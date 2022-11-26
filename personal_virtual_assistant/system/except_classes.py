@@ -12,7 +12,15 @@ class TheNameIsIncorrect(Exception):
     pass
 
 
+class TheEmailIsIncorrect(Exception):
+    pass
+
+
 class ThePhoneIsIncorrect(Exception):
+    pass
+
+
+class TheNameAndEmailAreMissing(Exception):
     pass
 
 
@@ -37,6 +45,10 @@ class InvalidBirthdayEntry(Exception):
 
 
 class InvalidBirthday(Exception):
+    pass
+
+
+class TheNameAnd2EmailsAreMissing(Exception):
     pass
 
 

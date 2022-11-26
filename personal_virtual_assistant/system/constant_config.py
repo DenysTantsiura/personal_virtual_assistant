@@ -73,7 +73,7 @@ OTHER_MESSAGE = {
     'deleting field': ['Field record deleted successfully. Results saved.', ],
     'no new entries': ['There were no entries to add.\n', ],
     'found': ['Entries found in your contact book:', ', birthday: ', '(days to next birthday: ', '. Will be ', \
-              ' yrs. old)\n-> phone(s): ', ', birthday: unknown\n-> phone(s): ', ],
+              ' yrs. old)', ',\n-> phone(s): ', ',\n-> email(s): ',],
     'all list': ['Entries in your contact book:', ],
     'all commands list': ['All commands in current version Personal Virtual Assistant:\n', \
                           'Detailed for each command: \"-h\" after them.\n', ],  # !!!!!!!!!!!!!!!!!!!!!!!!!!!
