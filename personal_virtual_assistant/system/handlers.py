@@ -77,6 +77,37 @@ def handler_add_birthday(user_command: List[str], contact_dictionary: AddressBoo
         no_changes = OTHER_MESSAGE.get('no changes', [AMBUSH])[0]
         return f'{no_changes}{verdict[1]}'
 
+
+@input_error
+def handler_add_nickname(user_command: List[str], contact_dictionary: AddressBook, path_file: str) -> str:
+    """"add nickname...": The bot saves new information about user 
+    in contact dictionary and save it in file(path_file). 
+    Instead of ... the user enters the name and nickname, 
+    necessarily with a space.
+
+        Parameters:
+            user_command (List[str]): List of user command (name of user and nickname).
+            contact_dictionary (AddressBook): Instance of AddressBook.
+            path_file (str): Is there path and filename of address book.
+
+        Returns:
+            string(str): Answer for the user.
+    """
+    name = user_command[1]
+    verdict = contact_dictionary[name].add_nickname(user_command[2])
+
+    if verdict[0]:
+
+        if address_book_saver(contact_dictionary, path_file):
+            return OTHER_MESSAGE.get('update successful', [AMBUSH])[0]
+        else:
+            return WARNING_MESSAGE.get('unsuccessful save', AMBUSH)
+
+    else:
+        no_changes = OTHER_MESSAGE.get('no changes', [AMBUSH])[0]
+        return f'{no_changes}{verdict[1]}'
+
+
 @input_error
 def handler_add_email(user_command: List[str], contact_dictionary: AddressBook, path_file: str) -> str:
     """"add ...": The bot saves a new emails to contact in contact dictionary 
@@ -237,6 +268,40 @@ def handler_change_birthday(user_command: List[str], contact_dictionary: Address
         return f'{no_changes}{verdict[1]}'
 
 
+
+@input_error
+def handler_change_nickname(user_command: List[str], contact_dictionary: AddressBook, path_file: str) -> str:
+    """"change nickname ...": The bot stores the
+    "new nickname" (if the previous one was wrong)
+    of the existing contact in contact dictionary and save it in file(path_file). 
+    Instead of ... the user enters the name and nickname, 
+    necessarily with a space.
+
+        Parameters:
+            user_command (List[str]): List of user command (name of user, and nickname).
+            contact_dictionary (AddressBook): Instance of AddressBook.
+            path_file (str): Is there path and filename of address book.
+
+        Returns:
+            string(str): Answer for the user.
+    """
+    name = user_command[1]
+    user_nickname = user_command[2]
+    verdict = contact_dictionary[name].change_nickname(user_nickname)
+
+    if verdict[0]:
+
+        if address_book_saver(contact_dictionary, path_file):
+            return OTHER_MESSAGE.get('update successful', [AMBUSH])[0]
+        else:
+            return WARNING_MESSAGE.get('unsuccessful save', AMBUSH)
+
+    else:
+        no_changes = OTHER_MESSAGE.get('no changes', [AMBUSH])[0]
+        return f'{no_changes}{verdict[1]}'
+
+
+
 @input_error
 def handler_find(user_command: List[str], contact_dictionary: AddressBook, _=None) -> list:
     """"Find ...": The bot outputs a list of users whose name or phone number 
@@ -377,6 +442,41 @@ def handler_remove_birthday(user_command: List[str], contact_dictionary: Address
 
     else:  # duplicate 'of except TheContactIsNotExist'
         return WARNING_MESSAGE.get('unknown name', AMBUSH)
+
+
+
+@input_error
+def handler_remove_nickname(user_command: List[str], contact_dictionary: AddressBook, path_file: str) -> str:
+    """"remove nickname ...": The bot remove a nickname record from contact in contact dictionary 
+    and save it in file(path_file). Instead of ... the user enters the name.
+
+        Parameters:
+            user_command (List[str]): List of user command (name of user).
+            contact_dictionary (AddressBook): Instance of AddressBook .
+            path_file (str): Is there path and filename of address book.
+
+        Returns:
+            string(str): Answer for the user.
+    """
+    name = user_command[1]
+    if contact_dictionary.get(name, None):
+
+        if contact_dictionary[name].nickname:
+
+            contact_dictionary[name].remove_nickname()
+
+            if address_book_saver(contact_dictionary, path_file):
+                return OTHER_MESSAGE.get('deleting field', [AMBUSH])[0]
+            else:
+                return WARNING_MESSAGE.get('unsuccessful save', AMBUSH)
+
+        else:
+            nickname2 = OTHER_MESSAGE.get('Rnickname', [AMBUSH]*3)[2]
+            return f'{nickname2}\"{name}\"'
+
+    else:  # duplicate 'of except TheContactIsNotExist'
+        return WARNING_MESSAGE.get('unknown name', AMBUSH)
+
 
 
 @input_error
@@ -524,6 +624,7 @@ ALL_COMMAND = {
     'add': handler_add,
     'add_email': handler_add_email,
     'add_phone': handler_add_phone,
+    'add_nickname': handler_add_nickname,
     'change': handler_change,
     'change_email': handler_change_email,
     'email': handler_email,

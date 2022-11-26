@@ -49,7 +49,7 @@ WARNING_MESSAGE = {
     'name and 2 phones omitted': 'Give me name and 2 phones please (current and new)\n',
     'no search query': 'There is no search query\n',
     'name is missing': 'Give me a name too, please.\n',
-    '': '',
+    'nickname is omitted': 'Nickname is omitted!\n',
     '': '',
 }
 
@@ -77,6 +77,6 @@ OTHER_MESSAGE = {
     'all list': ['Entries in your contact book:', ],
     'all commands list': ['All commands in current version Personal Virtual Assistant:\n', \
                           'Detailed for each command: \"-h\" after them.\n', ],  # !!!!!!!!!!!!!!!!!!!!!!!!!!!
-    '': ['', ],
+    'Rnickname': ['Nothing entered for nickname(middle name, surname, alias): ', '. You can change it.', 'Nothing to remove for '],
     '': ['', ],
 }

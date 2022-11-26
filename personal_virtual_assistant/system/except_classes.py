@@ -40,6 +40,10 @@ class TheNameAndBirthdayAreMissing(Exception):
     pass
 
 
+class TheNameAndNicknameAreMissing(Exception):
+    pass
+
+
 class InvalidBirthdayEntry(Exception):
     pass
 

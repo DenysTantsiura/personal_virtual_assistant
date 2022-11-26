@@ -13,6 +13,7 @@ from .except_classes import (
     TheEmailIsIncorrect,
     ThePhoneIsIncorrect,
     TheNameAndEmailAreMissing,
+    TheNameAndNicknameAreMissing,
     TheNameAndPhoneAreMissing,
     TheContactIsNotExist,
     NoAddressBook,
@@ -43,6 +44,8 @@ def input_error(handler):
             VALIDATION_FUNCTIONS[handler.__name__](user_command, contact_dictionary)
         except KeyError:
             return ERROR_MESSAGE.get('UnknownCommand', AMBUSH)
+        except TheNameAndNicknameAreMissing:
+            return WARNING_MESSAGE.get('nickname is omitted', AMBUSH)    
         except TheNameIsOmitted:
             return WARNING_MESSAGE.get('name is omitted', AMBUSH)
         except TheContactIsExist:

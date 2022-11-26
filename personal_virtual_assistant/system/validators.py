@@ -21,6 +21,7 @@ from .except_classes import (
     TheContactIsNotExist,
     NoAddressBook,
     TheNameAndBirthdayAreMissing,
+    TheNameAndNicknameAreMissing,
     InvalidBirthdayEntry,
     InvalidBirthday,
     TheNameAnd2EmailsAreMissing,
@@ -225,6 +226,20 @@ def validation_find(user_command: list, contact_dictionary: AddressBook) -> None
         raise NoSearchQuery
 
 
+def validation_nickname(user_command: list, contact_dictionary: AddressBook) -> None:
+    """Check the input parameters. Raise exception if it is detected."""
+    name = user_command[1] if len(user_command) > 1 else None
+
+    if not contact_dictionary:
+        raise NoAddressBook 
+
+    if len(user_command) < 3:  # or not name:
+        raise TheNameAndNicknameAreMissing
+
+    if name[0].isdigit() or not name[0].isalpha():
+        raise TheNameIsIncorrect
+
+
 def validation_phone(user_command: list, contact_dictionary: AddressBook) -> None:
     """Check the input parameters. Return a message (str) about a discrepancy if it is detected."""
     name = user_command[1] if len(user_command) > 1 else None
@@ -361,16 +376,19 @@ def validation_show_all(_, contact_dictionary: AddressBook) -> None:
 VALIDATION_FUNCTIONS = {
             'handler_add': validation_add,
             'handler_add_birthday': validation_birthday,
+            'handler_add_nickname': validation_nickname,
             'handler_add_email': validation_add_email,
             'handler_add_phone': validation_add_phone,
             'handler_change': validation_change,
             'handler_change_email': validation_change_email,
             'handler_change_birthday': validation_birthday,
+            'handler_change_nickname': validation_nickname,
             'handler_find': validation_find,
             'handler_email': validation_email,
             'handler_phone': validation_phone,
             'handler_remove': validation_remove,
             'handler_remove_birthday': validation_remove_birthday,
+            'handler_remove_nickname': validation_nickname,
             'handler_remove_email': validation_remove_email,
             'handler_remove_phone': validation_remove_phone,
             'handler_show': validation_show,

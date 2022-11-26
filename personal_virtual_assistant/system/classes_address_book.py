@@ -157,11 +157,12 @@ class Record:
     def __init__(self, name: str, *phones: str):
         self.name = Name()
         self.name.value = name
+        # self.name.bloke = None
         self.phones = []
         self.birthday = None
         self.emails = []
-        self.details = None
-        self.related_info = None
+        self.details = None  # class()
+        self.related_info = None  # class()
 
         if phones:
 
@@ -193,6 +194,16 @@ class Record:
             birthday0 = OTHER_MESSAGE.get('RBirthday', [AMBUSH])[0]
             birthday1 = OTHER_MESSAGE.get('RBirthday', [AMBUSH]*2)[1]
             return False, f'{birthday0}\"{self.name.value}\"{birthday1}'
+
+    def add_nickname(self, nickname: str) -> tuple:
+        """Adds a new entry for the user's name - nickname."""
+        if nickname:
+            self.name.bloke = nickname
+            return True,
+
+        else:
+            nickname0 = OTHER_MESSAGE.get('Rnickname', [AMBUSH])[0]
+            return False, f'{nickname0}\"{nickname}\"'
 
     def add_phone(self, phone_new: str) -> bool:
         """Adds a new entry for the user's phone to the address book."""
@@ -244,6 +255,17 @@ class Record:
             self.birthday.value = birthday
 
             return True,
+    
+    def change_nickname(self, new_nickname: str) -> tuple:
+        """Modify an existing user's nickname entry in the address book."""
+        if new_nickname:
+            self.name.bloke = new_nickname
+            return True,
+
+        else:
+            nickname0 = OTHER_MESSAGE.get('Rnickname', [AMBUSH])[0]
+            return False, f'{nickname0}\"{new_nickname}\"'
+
 
     def change_phone(self, phone_to_change: str, phone_new: str) -> tuple:
         """Modify an existing user's phone entry in the address book."""
@@ -323,6 +345,12 @@ class Record:
         """Deleting a birthday entry from a user entry in the address book."""
         if self.birthday:
             self.birthday = None
+            return True
+    
+    def remove_nickname(self) -> Union[bool, None]:
+        """Deleting a nickname entry from a user entry in the address book."""
+        if self.name.bloke:
+            self.name.bloke = None
             return True
 
     def remove_phone(self, phone_to_remove: str) -> Union[bool, None]:
