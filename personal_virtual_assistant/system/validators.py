@@ -14,6 +14,7 @@ from .except_classes import (
     TheNameIsOmitted,  # alphabetical?
     TheContactIsExist,
     TheNameIsIncorrect,
+    TheDetailsIsMissing,
     TheEmailIsIncorrect,
     ThePhoneIsIncorrect,
     TheNameAndEmailAreMissing,
@@ -118,6 +119,23 @@ def validation_add_phone(user_command: list, contact_dictionary: AddressBook) ->
         raise ThePhoneIsIncorrect
 
 
+def validation_add_details(user_command: list, contact_dictionary: AddressBook) -> None:
+    """Check the input parameters. Return a message (str) about a discrepancy if it is detected."""
+    name = user_command[1] if len(user_command) > 1 else None
+
+    if not name:  # len(user_command) < 3:
+        raise TheNameIsMissing
+
+    if name[0].isdigit() or not name[0].isalpha():
+        raise TheNameIsIncorrect
+
+    if name not in contact_dictionary:
+        raise TheContactIsNotExist
+
+    if len(user_command) < 4:
+        raise TheDetailsIsMissing
+
+
 def validation_birthday(user_command: list, contact_dictionary: AddressBook) -> None:
     """Check the input parameters. Raise exception if it is detected."""
     name = user_command[1] if len(user_command) > 1 else None
@@ -201,6 +219,27 @@ def validation_change_email(user_command: list, contact_dictionary: AddressBook)
         raise TheEmailIsIncorrect
 
 
+def validation_change_details(user_command: list, contact_dictionary: AddressBook) -> \
+        None:
+    """Check the input parameters. Return a message (str) about a discrepancy if it is detected."""
+    name = user_command[1] if len(user_command) > 1 else None
+
+    if not contact_dictionary:
+        raise NoAddressBook
+
+    if not name:  # len(user_command) < 3:
+        raise TheNameIsMissing
+
+    if name[0].isdigit() or not name[0].isalpha():
+        raise TheNameIsIncorrect
+
+    if name not in contact_dictionary:
+        raise TheContactIsNotExist
+
+    if len(user_command) < 4:
+        raise TheDetailsIsMissing
+
+
 def validation_email(user_command: list, contact_dictionary: AddressBook) -> None:
     """Check the input parameters. Return a message (str) about a discrepancy if it is detected."""
     name = user_command[1] if len(user_command) > 1 else None
@@ -272,6 +311,23 @@ def validation_remove(user_command: list, contact_dictionary: AddressBook) -> No
 
 
 def validation_remove_birthday(user_command: list, contact_dictionary: AddressBook) -> None:
+    """Check the input parameters. Return a message (str) about a discrepancy if it is detected."""
+    name = user_command[1] if len(user_command) > 1 else None
+
+    if not contact_dictionary:
+        raise NoAddressBook
+
+    if not name:  # len(user_command) < 2:
+        raise TheNameIsMissing
+
+    if name[0].isdigit() or not name[0].isalpha():
+        raise TheNameIsIncorrect
+
+    if name not in contact_dictionary:
+        raise TheContactIsNotExist
+
+
+def validation_remove_details(user_command: list, contact_dictionary: AddressBook) -> None:
     """Check the input parameters. Return a message (str) about a discrepancy if it is detected."""
     name = user_command[1] if len(user_command) > 1 else None
 
@@ -379,15 +435,18 @@ VALIDATION_FUNCTIONS = {
             'handler_add_nickname': validation_nickname,
             'handler_add_email': validation_add_email,
             'handler_add_phone': validation_add_phone,
+            'handler_add_details': validation_add_details,
             'handler_change': validation_change,
             'handler_change_email': validation_change_email,
             'handler_change_birthday': validation_birthday,
+            'handler_change_details': validation_change_details,
             'handler_change_nickname': validation_nickname,
             'handler_find': validation_find,
             'handler_email': validation_email,
             'handler_phone': validation_phone,
             'handler_remove': validation_remove,
             'handler_remove_birthday': validation_remove_birthday,
+            'handler_remove_details': validation_remove_details,
             'handler_remove_nickname': validation_nickname,
             'handler_remove_email': validation_remove_email,
             'handler_remove_phone': validation_remove_phone,

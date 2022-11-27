@@ -9,6 +9,7 @@ from .constant_config import (
 from .except_classes import (
     TheNameIsOmitted,  # alphabetical?
     TheContactIsExist,
+    TheDetailsIsMissing,
     TheNameIsIncorrect,
     TheEmailIsIncorrect,
     ThePhoneIsIncorrect,
@@ -78,6 +79,8 @@ def input_error(handler):
             return WARNING_MESSAGE.get('no search query', AMBUSH)
         except TheNameIsMissing:
             return WARNING_MESSAGE.get('name is missing', AMBUSH)
+        except TheDetailsIsMissing:
+            return WARNING_MESSAGE.get('details is missing', AMBUSH)
 
         error_ = ERROR_MESSAGE.get('UnexpectedError', [AMBUSH])[0]
         try:

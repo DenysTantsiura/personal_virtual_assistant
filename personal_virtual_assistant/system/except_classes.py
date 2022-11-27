@@ -8,6 +8,10 @@ class TheContactIsExist(Exception):
     pass
 
 
+class TheDetailsIsMissing(Exception):
+    pass
+
+
 class TheNameIsIncorrect(Exception):
     pass
 

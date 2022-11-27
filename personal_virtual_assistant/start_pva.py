@@ -3,9 +3,9 @@ NEXT NEED more TESTS!  + split to modules and... and next function for new field
 lines 91, 1307, !!!!!!!!!!!!!!!!!!!!!!!!! 
 
 -help for each command (from docstrings?)
-        v-split to modules
--add e-mail commands: 1) classes_...& constants 2) Record methods... 3) handler&__init__& ! find!&!show !... 4) validators&excClasses 5) auxil... 6) test with new bases
--add block in phone and mail commands
+
+!check! -add e-mail commands: 1) classes_...& constants 2) Record methods... 3) handler&__init__& ! find!&!show !... 4) validators&excClasses 5) auxil... 6) test with new bases
+    -add generator records 'gen'
 -add detail and related... commands
 -Cweb2 + video
 -описати абстрактний базовий клас для представлень користувача і конкретні реалізації, які наслідують базовий клас і реалізують консольний інтерфейс.

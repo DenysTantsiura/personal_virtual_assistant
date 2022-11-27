@@ -77,6 +77,36 @@ def handler_add_birthday(user_command: List[str], contact_dictionary: AddressBoo
         no_changes = OTHER_MESSAGE.get('no changes', [AMBUSH])[0]
         return f'{no_changes}{verdict[1]}'
 
+@input_error
+def handler_add_details(user_command: List[str], contact_dictionary: AddressBook, path_file: str) -> str:
+    """"add details...": The bot saves new information about user 
+    in contact dictionary and save it in file(path_file). 
+    Instead of ... the user enters the name, type details info and details info, 
+    necessarily with a space.
+
+        Parameters:
+            user_command (List[str]): List of user command (name of user, type details info 
+                and details info).
+            contact_dictionary (AddressBook): Instance of AddressBook.
+            path_file (str): Is there path and filename of address book.
+
+        Returns:
+            string(str): Answer for the user.
+    """
+    name = user_command[1]
+    verdict = contact_dictionary[name].details.add_details(user_command[2], ' '.join(user_command[3:]))
+
+    if verdict[0]:
+
+        if address_book_saver(contact_dictionary, path_file):
+            return OTHER_MESSAGE.get('update successful', [AMBUSH])[0]
+        else:
+            return WARNING_MESSAGE.get('unsuccessful save', AMBUSH)
+
+    else:
+        no_changes = OTHER_MESSAGE.get('no changes', [AMBUSH])[0]
+        return f'{no_changes}{verdict[1]}'
+
 
 @input_error
 def handler_add_nickname(user_command: List[str], contact_dictionary: AddressBook, path_file: str) -> str:
@@ -191,6 +221,37 @@ def handler_change(user_command: List[str], contact_dictionary: AddressBook, pat
     current_phone = user_command[2]
     new_phone = user_command[3]
     verdict = contact_dictionary[name].change_phone(current_phone, new_phone)
+
+    if verdict[0]:
+
+        if address_book_saver(contact_dictionary, path_file):
+            return OTHER_MESSAGE.get('update successful', [AMBUSH])[0]
+        else:
+            return WARNING_MESSAGE.get('unsuccessful save', AMBUSH)
+
+    else:
+        no_changes = OTHER_MESSAGE.get('no changes', [AMBUSH])[0]
+        return f'{no_changes}{verdict[1]}'
+
+
+@input_error
+def handler_change_details(user_command: List[str], contact_dictionary: AddressBook, path_file: str) -> str:
+    """"change details ...": The bot stores the new details of the existing 
+    contact in contact dictionary and save it in file(path_file).
+    Instead of ... the user enters the name, type details note and new details information, 
+    necessarily with a space.
+
+        Parameters:
+            user_command (List[str]): List of user command (name of user, type details info 
+                and details info).
+            contact_dictionary (AddressBook): Instance of AddressBook.
+            path_file (str): Is there path and filename of address book.
+
+        Returns:
+            string(str): Answer for the user.
+    """
+    name = user_command[1]
+    verdict = contact_dictionary[name].details.change_details(user_command[2], ' '.join(user_command[3:]))
 
     if verdict[0]:
 
@@ -444,6 +505,41 @@ def handler_remove_birthday(user_command: List[str], contact_dictionary: Address
         return WARNING_MESSAGE.get('unknown name', AMBUSH)
 
 
+@input_error
+def handler_remove_details(user_command: List[str], contact_dictionary: AddressBook, path_file: str) -> str:
+    """"remove details ...": The bot remove a type details note from contact in contact dictionary 
+    and save it in file(path_file). Instead of ... the user enters the name and type details note.
+
+        Parameters:
+            user_command (List[str]): List of user command (name of user, type details).
+            contact_dictionary (AddressBook): Instance of AddressBook.
+            path_file (str): Is there path and filename of address book.
+
+        Returns:
+            string(str): Answer for the user.
+    """
+    name = user_command[1]
+    if contact_dictionary.get(name, None):
+
+        if contact_dictionary[name].details.get(user_command[2], None):
+
+            verdict = contact_dictionary[name].details.remove_details()
+            if not verdict[0]:
+                return verdict[1]
+
+            if address_book_saver(contact_dictionary, path_file):
+                return OTHER_MESSAGE.get('deleting field', [AMBUSH])[0]
+            else:
+                return WARNING_MESSAGE.get('unsuccessful save', AMBUSH)
+
+        else:
+            details2 = OTHER_MESSAGE.get('Rdetails', [AMBUSH]*3)[2]
+            details3 = OTHER_MESSAGE.get('Rdetails', [AMBUSH]*4)[3]
+            return f'{details2}\"{name}\"{details3}'
+
+    else:  # duplicate 'of except ....'
+        return WARNING_MESSAGE.get('unknown name', AMBUSH)
+
 
 @input_error
 def handler_remove_nickname(user_command: List[str], contact_dictionary: AddressBook, path_file: str) -> str:
@@ -476,7 +572,6 @@ def handler_remove_nickname(user_command: List[str], contact_dictionary: Address
 
     else:  # duplicate 'of except TheContactIsNotExist'
         return WARNING_MESSAGE.get('unknown name', AMBUSH)
-
 
 
 @input_error
@@ -619,13 +714,50 @@ def handler_help(*_) -> str:
     return ''.join(all_commands_list)
 
 
+def secret_command(user_command: List[str], contact_dictionary: AddressBook, path_file: str) -> str:
+    """"gen": The bot generate virtual persons with random data, only for testings. 
+
+        Parameters:
+            user_command (List[str]): List of user command (name of user and phone(s)).
+            contact_dictionary (AddressBook): Instance of AddressBook.
+            path_file (str): Is there path and filename of address book.
+
+        Returns:
+            string(str): Answer for the user.
+    """
+    from random import randint, choice
+
+    generators_names = [f'Name{item}' for item in range(22)]
+    for name in generators_names:
+        handler_add(['add', name], contact_dictionary, path_file)
+        if randint(0,1):
+            handler_add_nickname(['add_nickname', name, name+name[::-1]], contact_dictionary, path_file)
+        if randint(0,1):    
+            handler_add_birthday(['add_birthday', name, f'{randint(1970,2002)}-{randint(1,12)}-{randint(1,28)}'], contact_dictionary, path_file)
+        if randint(0,1): 
+            for _ in range(randint(1,5)):
+                numder_ = str(randint(0,9)) * 7
+                handler_add_phone(['add_phone', name, f'+380{choice([63,67,50,73,91,93,97])}{numder_}'], contact_dictionary, path_file)
+        if randint(0,1): 
+            for _ in range(randint(1,3)):
+                domen = 'emaN'
+                handler_add_email(['add_email', name, f'{name}@{domen*randint(1,3)}.com.ua'], contact_dictionary, path_file)
+   
+    if address_book_saver(contact_dictionary, path_file):
+        return OTHER_MESSAGE.get('update successful', [AMBUSH])[0]
+    else:
+        return WARNING_MESSAGE.get('unsuccessful save', AMBUSH)
+
+
 ALL_COMMAND = {
     'hello': handler_hello,
     'add': handler_add,
+    'add_details': handler_add_details,
     'add_email': handler_add_email,
     'add_phone': handler_add_phone,
     'add_nickname': handler_add_nickname,
     'change': handler_change,
+    'change_details': handler_change_details,
     'change_email': handler_change_email,
     'email': handler_email,
     'phone': handler_phone,
@@ -638,11 +770,13 @@ ALL_COMMAND = {
     'change_birthday': handler_change_birthday,
     'find': handler_find,
     'remove': handler_remove,
+    'remove_details': handler_remove_details,
     'remove_email': handler_remove_email,
     'remove_phone': handler_remove_phone,
     'remove_birthday': handler_remove_birthday,
     'help': handler_help,
     '?': handler_help,
+    'gen': secret_command,
     }
 
 

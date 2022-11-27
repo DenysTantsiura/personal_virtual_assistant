@@ -8,8 +8,8 @@ DEFAULT_FILE_ADDRESS_BOOK = 'ABook.data'
 LIMIT_RECORDS_TO_DISPLAY = 10 
 
 PREFORMATING_PHONE = r'^\+[0-9)(-]{12,16}$'
-PREFORMATING_EMAIL1 = r'\b[a-zA-z][\w_.]+@[a-zA-z]+\.[a-zA-z]{2,}[ ]'
-PREFORMATING_EMAIL2 = r'\b[a-zA-z][\w_.]+@[a-zA-z]+\.[a-zA-z]+\.[a-zA-z]{2,}'
+PREFORMATING_EMAIL2 = r'\b[a-zA-z][\w_.]+@[a-zA-z]+\.[a-zA-z]{2,}$'  # {2,}[ ]
+PREFORMATING_EMAIL1 = r'\b[a-zA-z][\w_.]+@[a-zA-z]+\.[a-zA-z]+\.[a-zA-z]{2,}'
 
 ERROR_MESSAGE = {
     'UnpicklingError': ['The File', ' is corrupted, my apologies.', ],
@@ -50,13 +50,15 @@ WARNING_MESSAGE = {
     'no search query': 'There is no search query\n',
     'name is missing': 'Give me a name too, please.\n',
     'nickname is omitted': 'Nickname is omitted!\n',
-    '': '',
+    'details is missing': 'The no type and self details information.\n',
 }
 
 OTHER_MESSAGE = {
     'Record': ['\n\nRecord(Name: ', '; Phones: ', '; Birthday: ', ';\n\te-mail: ', ';\n\t details: ', \
                ':\n\t related information: ', ],
     'RBirthday': ['Birthday already recorded for ', '. You can change it.', 'Birthday not specified for ', \
+                  '. You can add it.', ],
+    'Rdetails': ['This details already recorded for ', '. You can change it.', 'This details not specified for ', \
                   '. You can add it.', ],
     'RPhone': [' already recorded for ', 'No phone(s) entry in record ', ' not specified in the contact ', ],
     'REmail': [' already recorded for ', 'No email(s) entry in record ', ' not specified in the contact ', ],
@@ -73,10 +75,10 @@ OTHER_MESSAGE = {
     'deleting field': ['Field record deleted successfully. Results saved.', ],
     'no new entries': ['There were no entries to add.\n', ],
     'found': ['Entries found in your contact book:', ', birthday: ', '(days to next birthday: ', '. Will be ', \
-              ' yrs. old)', ',\n-> phone(s): ', ',\n-> email(s): ',],
+              ' yrs. old)', '\n-> phone(s): ', '\n-> email(s): ',],
     'all list': ['Entries in your contact book:', ],
     'all commands list': ['All commands in current version Personal Virtual Assistant:\n', \
                           'Detailed for each command: \"-h\" after them.\n', ],  # !!!!!!!!!!!!!!!!!!!!!!!!!!!
     'Rnickname': ['Nothing entered for nickname(middle name, surname, alias): ', '. You can change it.', 'Nothing to remove for '],
-    '': ['', ],
+    'details': ['Current note ', '...nothing...', 'This note already exists.', 'This note is missing in records.',],
 }

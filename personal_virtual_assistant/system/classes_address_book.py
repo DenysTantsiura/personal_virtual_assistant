@@ -1,3 +1,4 @@
+from collections import UserDict
 from datetime import datetime
 import re
 from typing import Union
@@ -99,13 +100,38 @@ class Phone(Field):
         return value
 
 
-class Details(Field):
+class Details(UserDict):
     """Details information of user."""
-    # @Field.value.setter
-    # def value(self, new_value: str):
-    #     self._value = new_value
+    def __str__(self):
+        value = ''
+        for bloke_name, bloke in self.data.items():
+            value += f'{bloke_name}: {bloke}\n'
+        return value
 
-    pass
+    def add_details(self, bloke_name: str, bloke: str) -> bool:
+        """Adds a new details to the Details-note."""
+        if self.data.get(bloke_name, None):
+            return False, OTHER_MESSAGE.get('details', [AMBUSH])[2]
+        self.data[bloke_name] = bloke
+        return True, 
+            
+    def change_details(self, bloke_name: str, bloke: str) -> bool:
+        if self.data.get(bloke_name, None):
+            details0 = OTHER_MESSAGE.get('details', [AMBUSH])[0]
+            details1 = OTHER_MESSAGE.get('details', [AMBUSH])[1]
+            print(f'{details0}{bloke_name}: {self.data.get(bloke_name, details1)}')
+            self.data[bloke_name] = bloke
+            return True, 
+        
+        return False, OTHER_MESSAGE.get('details', [AMBUSH])[3]
+
+    def remove_details(self, bloke_name: str) -> bool:
+        """Remove a details from the Details-note."""
+        if self.data.get(bloke_name, None):
+            self.data.pop(bloke_name)
+            return True,
+        
+        return False, OTHER_MESSAGE.get('details', [AMBUSH])[3]
 
 
 class Email(Field):
@@ -130,7 +156,7 @@ class Record:
         self.phones = []
         self.birthday = None
         self.emails = []
-        self.details = None  # class()
+        self.details = Details()  # None  # class()
 
         if phones:
 
@@ -162,6 +188,7 @@ class Record:
             birthday0 = OTHER_MESSAGE.get('RBirthday', [AMBUSH])[0]
             birthday1 = OTHER_MESSAGE.get('RBirthday', [AMBUSH]*2)[1]
             return False, f'{birthday0}\"{self.name.value}\"{birthday1}'
+    
 
     def add_nickname(self, nickname: str) -> tuple:
         """Adds a new entry for the user's name - nickname."""
