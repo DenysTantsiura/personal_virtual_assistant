@@ -63,8 +63,8 @@ def forming_user_information(record: Record) -> str:
     found_p6 = OTHER_MESSAGE.get('found', [AMBUSH])[6]
 
     volume += f'\n\n{record.name}\t'
-    if record.name.bloke:
-        volume += f'{record.name.bloke}\t'
+    if record.name.nickname:
+        volume += f'{record.name.nickname}\t'
     
     if record.details:
         volume += f'\n{record.details}\n'
@@ -84,7 +84,7 @@ def forming_user_information(record: Record) -> str:
         for email in record.emails:
             volume += f'{email.value}; '
     
-    if record.related_info:
-        volume += f'\n{record.related_info}\n'
+    # if record.related_info:
+    #     volume += f'\n{record.related_info}\n'
 
     return volume

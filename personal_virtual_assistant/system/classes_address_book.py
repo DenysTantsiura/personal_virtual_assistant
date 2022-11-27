@@ -18,7 +18,6 @@ class Field:  # superclass for all base fields
 
     def __init__(self):
         self._value = None
-        self._bloke = None
 
     def __str__(self):
         return f'{self.value}'
@@ -30,18 +29,18 @@ class Field:  # superclass for all base fields
     @value.setter
     def value(self, new_value: str):
         self._value = new_value
-    
-    @property
-    def bloke(self):
-        return self._bloke
-
-    @bloke.setter
-    def bloke(self, new_bloke: str):
-        self._bloke = new_bloke
-
+   
 
 class Name(Field):
     """Class of user name."""
+    def __init__(self):
+        super().__init__()
+        self._nickname = None
+
+    @property
+    def nickname(self):
+        return self._nickname
+
     @Field.value.setter
     def value(self, new_value: str):
 
@@ -51,11 +50,11 @@ class Name(Field):
         else:
             print(WARNING_MESSAGE.get('name', AMBUSH))
     
-    @Field.bloke.setter
-    def bloke(self, new_bloke: str):
+    @nickname.setter
+    def nickname(self, new_nickname: str):
 
-        if new_bloke[0].isalpha():  # not in 'ьъыЫЬЪ\'"[]_0123456789!@$%^&*()-+?<>~`|\\/'
-            self._bloke = new_bloke
+        if new_nickname[0].isalpha():  # not in 'ьъыЫЬЪ\'"[]_0123456789!@$%^&*()-+?<>~`|\\/'
+            self._nickname = new_nickname
 
         else:
             print(WARNING_MESSAGE.get('name', AMBUSH))
@@ -88,9 +87,6 @@ class Phone(Field):
         else:
             print(WARNING_MESSAGE.get('phone', AMBUSH))
     
-    # @Field.bloke.setter
-    # def bloke(self, new_bloke: str):
-    #     self._bloke = new_bloke
 
     @staticmethod
     def _preformating(value: str) -> str:
@@ -108,10 +104,7 @@ class Details(Field):
     # @Field.value.setter
     # def value(self, new_value: str):
     #     self._value = new_value
-    
-    # @Field.bloke.setter
-    # def bloke(self, new_bloke: str):
-    #     self._bloke = new_bloke
+
     pass
 
 
@@ -127,29 +120,6 @@ class Email(Field):
         else:
             print(WARNING_MESSAGE.get('email', AMBUSH))
     
-    
-    @Field.bloke.setter
-    def bloke(self, new_bloke: str):
-
-        if new_bloke[0].isalpha():  # not in 'ьъыЫЬЪ\'"[]_0123456789!@$%^&*()-+?<>~`|\\/'
-            self._bloke = new_bloke
-
-        else:
-            print(WARNING_MESSAGE.get('name', AMBUSH))
-
-
-class RelatedInformation(Field):
-    """Related information of user."""
-    # @Field.value.setter
-    # def value(self, new_value: str):
-    #     self._value = new_value
-
-    # @Field.bloke.setter
-    # def bloke(self, new_bloke: str):
-    #     self._bloke = new_bloke
-    
-    pass
-
 
 class Record:
     """Record class of users information."""
@@ -157,12 +127,10 @@ class Record:
     def __init__(self, name: str, *phones: str):
         self.name = Name()
         self.name.value = name
-        # self.name.bloke = None
         self.phones = []
         self.birthday = None
         self.emails = []
         self.details = None  # class()
-        self.related_info = None  # class()
 
         if phones:
 
@@ -175,11 +143,11 @@ class Record:
         birthday_ = OTHER_MESSAGE.get('Record', [AMBUSH]*3)[2]
         email_ = OTHER_MESSAGE.get('Record', [AMBUSH]*4)[3]
         details_ = OTHER_MESSAGE.get('Record', [AMBUSH]*5)[4]
-        related_ = OTHER_MESSAGE.get('Record', [AMBUSH]*6)[5]
+        # related_ = OTHER_MESSAGE.get('Record', [AMBUSH]*6)[5]
 
         return f'{name_}{self.name}{phones_}{self.phones}{birthday_}'\
             f'{self.birthday}{email_}{self.emails}{details_}{self.details}'\
-            f'{related_}{self.related_info})'
+            f')'# f'{related_}{self.related_info})'
 
     def add_birthday(self, birthday: str) -> tuple:
         """Adds a new entry for the user's birthday to the address book."""
@@ -198,7 +166,7 @@ class Record:
     def add_nickname(self, nickname: str) -> tuple:
         """Adds a new entry for the user's name - nickname."""
         if nickname:
-            self.name.bloke = nickname
+            self.name.nickname = nickname
             return True,
 
         else:
@@ -259,7 +227,7 @@ class Record:
     def change_nickname(self, new_nickname: str) -> tuple:
         """Modify an existing user's nickname entry in the address book."""
         if new_nickname:
-            self.name.bloke = new_nickname
+            self.name.nickname = new_nickname
             return True,
 
         else:
@@ -349,8 +317,8 @@ class Record:
     
     def remove_nickname(self) -> Union[bool, None]:
         """Deleting a nickname entry from a user entry in the address book."""
-        if self.name.bloke:
-            self.name.bloke = None
+        if self.name.nickname:
+            self.name.nickname = None
             return True
 
     def remove_phone(self, phone_to_remove: str) -> Union[bool, None]:

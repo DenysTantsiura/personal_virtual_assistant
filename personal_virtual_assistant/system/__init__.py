@@ -8,7 +8,7 @@ from .classes_address_book import (
     Name,
     Phone,
     Record,
-    RelatedInformation,
+    # RelatedInformation,
 )
 from .command_parser import parser
 from .constant_config import (
@@ -107,7 +107,7 @@ __all__ = [
     'Name',
     'Phone',
     'Record',
-    'RelatedInformation',
+    # 'RelatedInformation',
     'parser',
     'AMBUSH',
     'TO_NEXT_FILE_NAME',
