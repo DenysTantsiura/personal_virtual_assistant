@@ -6,12 +6,47 @@ from typing import Union
 from .constant_config import (
     AMBUSH,
     BIRTHDAY_FORMAT,
-    PREFORMATING_PHONE, 
-    PREFORMATING_EMAIL1, 
-    PREFORMATING_EMAIL2, 
+    OTHER_MESSAGE, 
+    PREFORMATTING_EMAIL1, 
+    PREFORMATTING_EMAIL2, 
+    PREFORMATTING_PHONE,
     WARNING_MESSAGE, 
-    OTHER_MESSAGE,
 )
+
+
+class Details(UserDict):
+    """Details information of user."""
+    def __str__(self):
+        value = ''
+        for bloke_name, bloke in self.data.items():
+            value += f'{bloke_name}: {bloke}\n'
+        return value
+
+    def add_details(self, bloke_name: str, bloke: str) -> tuple[bool, str]:
+        """Adds a new details to the Details-note."""
+        if self.data.get(bloke_name, None):
+            return False, OTHER_MESSAGE.get('details', [AMBUSH])[2]
+        self.data[bloke_name] = bloke
+        return True, ''
+            
+    def change_details(self, bloke_name: str, bloke: str) -> tuple[bool, str]:
+        """Change details information in the Details-note."""
+        if self.data.get(bloke_name, None):
+            details0 = OTHER_MESSAGE.get('details', [AMBUSH])[0]
+            details1 = OTHER_MESSAGE.get('details', [AMBUSH])[1]
+            print(f'{details0}{bloke_name}: {self.data.get(bloke_name, details1)}')
+            self.data[bloke_name] = bloke
+            return True, ''
+        
+        return False, OTHER_MESSAGE.get('details', [AMBUSH])[3]
+
+    def remove_details(self, bloke_name: str) -> tuple[bool, str]:
+        """Remove a details from the Details-note."""
+        if self.data.get(bloke_name, None):
+            self.data.pop(bloke_name)
+            return True, ''
+        
+        return False, OTHER_MESSAGE.get('details', [AMBUSH])[3]
 
 
 class Field:  # superclass for all base fields
@@ -30,10 +65,39 @@ class Field:  # superclass for all base fields
     @value.setter
     def value(self, new_value: str):
         self._value = new_value
-   
+
+
+class Birthday(Field):
+    """Class of Birthday data."""
+    @Field.value.setter
+    def value(self, new_value: str):
+        birthday_data = datetime.strptime(new_value, BIRTHDAY_FORMAT)
+
+        if birthday_data:
+            self._value = birthday_data
+
+        else:
+            print(WARNING_MESSAGE.get('birthday', AMBUSH))
+
+    def __str__(self) -> str:
+        return f'{self.value.date()}'
+
+
+class Email(Field):
+    """Class of user Email."""
+    @Field.value.setter
+    def value(self, new_value: str):
+
+        if re.search(PREFORMATTING_EMAIL1, new_value) or\
+             re.search(PREFORMATTING_EMAIL2, new_value):
+            self._value = new_value.strip()
+
+        else:
+            print(WARNING_MESSAGE.get('email', AMBUSH))
+  
 
 class Name(Field):
-    """Class of user name."""
+    """Class of username."""
     def __init__(self):
         super().__init__()
         self._nickname = None
@@ -61,37 +125,20 @@ class Name(Field):
             print(WARNING_MESSAGE.get('name', AMBUSH))
 
 
-class Birthday(Field):
-    """Class of Birthday data."""
-    @Field.value.setter
-    def value(self, new_value: str):
-        birthday_data = datetime.strptime(new_value, BIRTHDAY_FORMAT)
-
-        if birthday_data:
-            self._value = birthday_data
-
-        else:
-            print(WARNING_MESSAGE.get('birthday', AMBUSH))
-
-    def __str__(self) -> str:
-        return f'{self.value.date()}'
-
-
 class Phone(Field):
     """Class of phone number."""
     @Field.value.setter
     def value(self, new_value: str):
 
-        if re.search(PREFORMATING_PHONE, new_value):
-            self._value = self._preformating(new_value)
+        if re.search(PREFORMATTING_PHONE, new_value):
+            self._value = self.preformatting(new_value)
 
         else:
             print(WARNING_MESSAGE.get('phone', AMBUSH))
     
-
     @staticmethod
-    def _preformating(value: str) -> str:
-        """Preformating of phone string into the form +dd(ddd)ddddddd."""
+    def preformatting(value: str) -> str:
+        """PREFORMATTING of phone string into the form +dd(ddd)ddddddd."""
         value = value.replace('-', '').replace('(', '').replace(')', '')
 
         value = '('.join((value[: 3], value[3:]))
@@ -99,54 +146,7 @@ class Phone(Field):
  
         return value
 
-
-class Details(UserDict):
-    """Details information of user."""
-    def __str__(self):
-        value = ''
-        for bloke_name, bloke in self.data.items():
-            value += f'{bloke_name}: {bloke}\n'
-        return value
-
-    def add_details(self, bloke_name: str, bloke: str) -> bool:
-        """Adds a new details to the Details-note."""
-        if self.data.get(bloke_name, None):
-            return False, OTHER_MESSAGE.get('details', [AMBUSH])[2]
-        self.data[bloke_name] = bloke
-        return True, 
-            
-    def change_details(self, bloke_name: str, bloke: str) -> bool:
-        if self.data.get(bloke_name, None):
-            details0 = OTHER_MESSAGE.get('details', [AMBUSH])[0]
-            details1 = OTHER_MESSAGE.get('details', [AMBUSH])[1]
-            print(f'{details0}{bloke_name}: {self.data.get(bloke_name, details1)}')
-            self.data[bloke_name] = bloke
-            return True, 
-        
-        return False, OTHER_MESSAGE.get('details', [AMBUSH])[3]
-
-    def remove_details(self, bloke_name: str) -> bool:
-        """Remove a details from the Details-note."""
-        if self.data.get(bloke_name, None):
-            self.data.pop(bloke_name)
-            return True,
-        
-        return False, OTHER_MESSAGE.get('details', [AMBUSH])[3]
-
-
-class Email(Field):
-    """Class of user Email."""
-    @Field.value.setter
-    def value(self, new_value: str):
-
-        if re.search(PREFORMATING_EMAIL1, new_value) or\
-             re.search(PREFORMATING_EMAIL2, new_value):
-            self._value = new_value.strip()
-
-        else:
-            print(WARNING_MESSAGE.get('email', AMBUSH))
-    
-
+  
 class Record:
     """Record class of users information."""
 
@@ -173,7 +173,7 @@ class Record:
 
         return f'{name_}{self.name}{phones_}{self.phones}{birthday_}'\
             f'{self.birthday}{email_}{self.emails}{details_}{self.details}'\
-            f')'# f'{related_}{self.related_info})'
+            f')'  # f'{related_}{self.related_info})'
 
     def add_birthday(self, birthday: str) -> tuple:
         """Adds a new entry for the user's birthday to the address book."""
@@ -188,7 +188,6 @@ class Record:
             birthday0 = OTHER_MESSAGE.get('RBirthday', [AMBUSH])[0]
             birthday1 = OTHER_MESSAGE.get('RBirthday', [AMBUSH]*2)[1]
             return False, f'{birthday0}\"{self.name.value}\"{birthday1}'
-    
 
     def add_nickname(self, nickname: str) -> tuple:
         """Adds a new entry for the user's name - nickname."""
@@ -197,7 +196,7 @@ class Record:
             return True,
 
         else:
-            nickname0 = OTHER_MESSAGE.get('Rnickname', [AMBUSH])[0]
+            nickname0 = OTHER_MESSAGE.get('RNickname', [AMBUSH])[0]
             return False, f'{nickname0}\"{nickname}\"'
 
     def add_phone(self, phone_new: str) -> bool:
@@ -258,14 +257,13 @@ class Record:
             return True,
 
         else:
-            nickname0 = OTHER_MESSAGE.get('Rnickname', [AMBUSH])[0]
+            nickname0 = OTHER_MESSAGE.get('RNickname', [AMBUSH])[0]
             return False, f'{nickname0}\"{new_nickname}\"'
-
 
     def change_phone(self, phone_to_change: str, phone_new: str) -> tuple:
         """Modify an existing user's phone entry in the address book."""
-        phone_to_change = Phone._preformating(phone_to_change)
-        phone_new = Phone._preformating(phone_new)
+        phone_to_change = Phone.preformatting(phone_to_change)
+        phone_new = Phone.preformatting(phone_new)
         verdict = False
 
         for phone in self.phones:
@@ -322,15 +320,17 @@ class Record:
         """Count the number of days until the next birthday of the user."""
         if self.birthday:
 
-            user_day = datetime(year=datetime.now().date().year, \
-                month=self.birthday.value.month, day=self.birthday.value.day)
+            user_day = datetime(year=datetime.now().date().year,
+                                month=self.birthday.value.month,
+                                day=self.birthday.value.day)
 
             days_left = user_day.date() - datetime.now().date()
 
             if days_left.days <= 0:
 
-                user_day = datetime(year=datetime.now().date().year + 1, \
-                    month=self.birthday.value.month, day=self.birthday.value.day)
+                user_day = datetime(year=datetime.now().date().year + 1,
+                                    month=self.birthday.value.month,
+                                    day=self.birthday.value.day)
 
                 return (user_day.date() - datetime.now().date()).days
 
@@ -350,7 +350,7 @@ class Record:
 
     def remove_phone(self, phone_to_remove: str) -> Union[bool, None]:
         """Deleting a phone entry from a user entry in the address book."""
-        phone_to_remove = Phone._preformating(phone_to_remove)
+        phone_to_remove = Phone.preformatting(phone_to_remove)
 
         for phone in self.phones:
 
@@ -363,7 +363,7 @@ class Record:
         print(f'\"{phone_to_remove}\"{phone2}\"{self.name.value}\"')
 
     def remove_email(self, email_to_remove: str) -> Union[bool, None]:
-        """Deleting a email entry from a user entry in the address book."""
+        """Deleting an email entry from a user entry in the address book."""
         for email in self.emails:
 
             if email.value == email_to_remove:
@@ -378,8 +378,9 @@ class Record:
         """Calculate the number of full years of the user on the next birthday."""
         if self.birthday:
            
-            user_day = datetime(year=datetime.now().date().year, \
-                month=self.birthday.value.month, day=self.birthday.value.day)
+            user_day = datetime(year=datetime.now().date().year,
+                                month=self.birthday.value.month,
+                                day=self.birthday.value.day)
 
             return datetime.now().year - self.birthday.value.year \
                 if (user_day.date() - datetime.now().date()).days > 0 \
