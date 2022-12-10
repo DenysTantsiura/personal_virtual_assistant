@@ -54,6 +54,7 @@ def main() -> NoReturn:
             user_request, contact_dictionary, new_path_file)
 
         if isinstance(bot_answer, str):
+            
             print(bot_answer)
 
         elif isinstance(bot_answer, list):
