@@ -1,7 +1,8 @@
 from typing import List, Union
 
 from .address_book import AddressBook
-from .auxiliary_functions import find_users, forming_user_information
+from .auxiliary_functions import find_users, forming_user_information, find_notes
+from .class_note import Note
 from .classes_address_book import Record
 from .constant_config import (
     AMBUSH,
@@ -10,7 +11,40 @@ from .constant_config import (
     WARNING_MESSAGE, 
 )
 from .main_validator import input_error
-from .serialization import address_book_saver
+from .note_book import NoteBook
+from .serialization import SaveTheBook
+
+from junk_sorter import junk_sorter
+
+@input_error
+def handler_add_address(user_command: List[str], contact_dictionary: AddressBook, path_file: str) -> str:
+    """"add address...": The bot saves new information about user 
+    in contact dictionary and save it in file(path_file). 
+    Instead of ... the user enters the name and address (simple string), 
+    necessarily with a space.
+
+        Parameters:
+            user_command (List[str]): List of user command (name of user and address).
+            contact_dictionary (AddressBook): Instance of AddressBook.
+            path_file (str): Is there path and filename of address book.
+
+        Returns:
+            string(str): Answer for the user.
+    """
+    name = user_command[1]
+    # verdict = contact_dictionary[name].add_address(user_command[2])
+    verdict = contact_dictionary[name].add_address(' '.join(user_command[2:]))
+
+    if verdict[0]:
+
+        if SaveTheBook().save_book(contact_dictionary, path_file):
+            return OTHER_MESSAGE.get('update successful', [AMBUSH])[0]
+        else:
+            return WARNING_MESSAGE.get('unsuccessful save', AMBUSH)
+
+    else:
+        no_changes = OTHER_MESSAGE.get('no changes', [AMBUSH])[0]
+        return f'{no_changes}{verdict[1]}'
 
 
 @input_error
@@ -33,7 +67,7 @@ def handler_add_birthday(user_command: List[str], contact_dictionary: AddressBoo
 
     if verdict[0]:
 
-        if address_book_saver(contact_dictionary, path_file):
+        if SaveTheBook().save_book(contact_dictionary, path_file):
             return OTHER_MESSAGE.get('update successful', [AMBUSH])[0]
         else:
             return WARNING_MESSAGE.get('unsuccessful save', AMBUSH)
@@ -64,7 +98,7 @@ def handler_add_details(user_command: List[str], contact_dictionary: AddressBook
 
     if verdict[0]:
 
-        if address_book_saver(contact_dictionary, path_file):
+        if SaveTheBook().save_book(contact_dictionary, path_file):
             return OTHER_MESSAGE.get('update successful', [AMBUSH])[0]
         else:
             return WARNING_MESSAGE.get('unsuccessful save', AMBUSH)
@@ -100,7 +134,7 @@ def handler_add_email(user_command: List[str], contact_dictionary: AddressBook, 
     if not write_count:
         return OTHER_MESSAGE.get('no new entries', [AMBUSH])[0]
 
-    if address_book_saver(contact_dictionary, path_file):
+    if SaveTheBook().save_book(contact_dictionary, path_file):
         return OTHER_MESSAGE.get('update successful', [AMBUSH])[0]
     else:
         return WARNING_MESSAGE.get('unsuccessful save', AMBUSH)
@@ -126,7 +160,7 @@ def handler_add_nickname(user_command: List[str], contact_dictionary: AddressBoo
 
     if verdict[0]:
 
-        if address_book_saver(contact_dictionary, path_file):
+        if SaveTheBook().save_book(contact_dictionary, path_file):
             return OTHER_MESSAGE.get('update successful', [AMBUSH])[0]
         else:
             return WARNING_MESSAGE.get('unsuccessful save', AMBUSH)
@@ -162,7 +196,7 @@ def handler_add_phone(user_command: List[str], contact_dictionary: AddressBook, 
     if not write_count:
         return OTHER_MESSAGE.get('no new entries', [AMBUSH])[0]
 
-    if address_book_saver(contact_dictionary, path_file):
+    if SaveTheBook().save_book(contact_dictionary, path_file):
         return OTHER_MESSAGE.get('update successful', [AMBUSH])[0]
     else:
         return WARNING_MESSAGE.get('unsuccessful save', AMBUSH)
@@ -197,10 +231,42 @@ def handler_add(user_command: List[str], contact_dictionary: AddressBook, path_f
         if not verdict:
             return WARNING_MESSAGE.get('empty record to add', AMBUSH)
 
-    if address_book_saver(contact_dictionary, path_file):
+    if SaveTheBook().save_book(contact_dictionary, path_file):
         return OTHER_MESSAGE.get('successful addition', [AMBUSH])[0]
     else:
         return WARNING_MESSAGE.get('unsuccessful save', AMBUSH)
+
+
+@input_error
+def handler_change_address(user_command: List[str], contact_dictionary: AddressBook, path_file: str) -> str:
+    """"change address ...": The bot stores the
+    "new address" (if the previous one was wrong)
+    of the existing contact in contact dictionary and save it in file(path_file). 
+    Instead of ... the user enters the name and address (in format YYYY-MM-DD), 
+    necessarily with a space.
+
+        Parameters:
+            user_command (List[str]): List of user command (name of user, and address).
+            contact_dictionary (AddressBook): Instance of AddressBook.
+            path_file (str): Is there path and filename of address book.
+
+        Returns:
+            string(str): Answer for the user.
+    """
+    name = user_command[1]
+    user_address = ' '.join(user_command[2:])
+    verdict = contact_dictionary[name].change_address(user_address)
+
+    if verdict[0]:
+
+        if SaveTheBook().save_book(contact_dictionary, path_file):
+            return OTHER_MESSAGE.get('update successful', [AMBUSH])[0]
+        else:
+            return WARNING_MESSAGE.get('unsuccessful save', AMBUSH)
+
+    else:
+        no_changes = OTHER_MESSAGE.get('no changes', [AMBUSH])[0]
+        return f'{no_changes}{verdict[1]}'
 
 
 @input_error
@@ -225,7 +291,7 @@ def handler_change_birthday(user_command: List[str], contact_dictionary: Address
 
     if verdict[0]:
 
-        if address_book_saver(contact_dictionary, path_file):
+        if SaveTheBook().save_book(contact_dictionary, path_file):
             return OTHER_MESSAGE.get('update successful', [AMBUSH])[0]
         else:
             return WARNING_MESSAGE.get('unsuccessful save', AMBUSH)
@@ -256,7 +322,7 @@ def handler_change_details(user_command: List[str], contact_dictionary: AddressB
 
     if verdict[0]:
 
-        if address_book_saver(contact_dictionary, path_file):
+        if SaveTheBook().save_book(contact_dictionary, path_file):
             return OTHER_MESSAGE.get('update successful', [AMBUSH])[0]
         else:
             return WARNING_MESSAGE.get('unsuccessful save', AMBUSH)
@@ -288,7 +354,7 @@ def handler_change_email(user_command: List[str], contact_dictionary: AddressBoo
 
     if verdict[0]:
 
-        if address_book_saver(contact_dictionary, path_file):
+        if SaveTheBook().save_book(contact_dictionary, path_file):
             return OTHER_MESSAGE.get('update successful', [AMBUSH])[0]
         else:
             return WARNING_MESSAGE.get('unsuccessful save', AMBUSH)
@@ -320,7 +386,7 @@ def handler_change_nickname(user_command: List[str], contact_dictionary: Address
 
     if verdict[0]:
 
-        if address_book_saver(contact_dictionary, path_file):
+        if SaveTheBook().save_book(contact_dictionary, path_file):
             return OTHER_MESSAGE.get('update successful', [AMBUSH])[0]
         else:
             return WARNING_MESSAGE.get('unsuccessful save', AMBUSH)
@@ -352,7 +418,7 @@ def handler_change(user_command: List[str], contact_dictionary: AddressBook, pat
 
     if verdict[0]:
 
-        if address_book_saver(contact_dictionary, path_file):
+        if SaveTheBook().save_book(contact_dictionary, path_file):
             return OTHER_MESSAGE.get('update successful', [AMBUSH])[0]
         else:
             return WARNING_MESSAGE.get('unsuccessful save', AMBUSH)
@@ -360,6 +426,30 @@ def handler_change(user_command: List[str], contact_dictionary: AddressBook, pat
     else:
         no_changes = OTHER_MESSAGE.get('no changes', [AMBUSH])[0]
         return f'{no_changes}{verdict[1]}'
+
+
+def handler_command_guesser(user_command: List[str], _=None, __=None) -> Union[str, None]:
+    """In the case of an unrecognized command, the bot offers the closest similar known command."""
+    candidates = user_command[1:]
+    commands = []
+    for word in candidates:
+        for part in ALL_COMMAND:
+            if part.startswith(word):
+                commands.append(part.replace('_', ' '))
+    if not commands:
+        for word in candidates:
+            for part in ALL_COMMAND:
+                if word in part:
+                    commands.append(part.replace('_', ' '))
+    if not commands:
+        for word in candidates:
+            for part in ALL_COMMAND:
+                if word[:3] in part:
+                    commands.append(part.replace('_', ' '))
+    if commands:
+        return f'''{OTHER_MESSAGE.get('Unknown', [AMBUSH]*3)[2]}{commands}\n'''
+
+    return OTHER_MESSAGE.get('Unknown', [AMBUSH])[0] + OTHER_MESSAGE.get('Unknown', [AMBUSH]*2)[1]
 
 
 @input_error
@@ -418,6 +508,24 @@ def handler_find(user_command: List[str], contact_dictionary: AddressBook, _=Non
 
     return found_list
 
+@input_error
+def handler_happy_birthday(user_command: List[str], contact_dictionary: AddressBook, _=None) -> list:
+    """"happy birthday ...": The bot outputs a list of users whose the birthday will be celebrated 
+        between the current date and the specified day (consecutive days from the current date).
+        End day must be between 1 and 90.
+        Example:
+            happy birthday 10
+
+        Parameters:
+            user_command (List[str]): List of user command (End day in [1]).
+            contact_dictionary (AddressBook): Instance of AddressBook.
+            _: path_file (str) - Is there path and filename of address book.
+
+        Returns:
+            found_list (list): Answer for the user - list of string of found users with happy birthday.
+    """ 
+    return contact_dictionary.show_happy_birthday(user_command[1])
+
 
 def handler_hello(*_) -> str:
     """Reply to the greeting."""
@@ -457,6 +565,40 @@ def handler_phone(user_command: List[str], contact_dictionary: AddressBook, _=No
 
 
 @input_error
+def handler_remove_address(user_command: List[str], contact_dictionary: AddressBook, path_file: str) -> str:
+    """"remove address ...": The bot remove a address record from contact in contact dictionary 
+    and save it in file(path_file). Instead of ... the user enters the name.
+
+        Parameters:
+            user_command (List[str]): List of user command (name of user).
+            contact_dictionary (AddressBook): Instance of AddressBook .
+            path_file (str): Is there path and filename of address book.
+
+        Returns:
+            string(str): Answer for the user.
+    """
+    name = user_command[1]
+    if contact_dictionary.get(name, None):
+
+        if contact_dictionary[name].address:
+
+            contact_dictionary[name].remove_address()
+
+            if SaveTheBook().save_book(contact_dictionary, path_file):
+                return OTHER_MESSAGE.get('deleting field', [AMBUSH])[0]
+            else:
+                return WARNING_MESSAGE.get('unsuccessful save', AMBUSH)
+
+        else:
+            address2 = OTHER_MESSAGE.get('Raddress', [AMBUSH]*3)[2]
+            address3 = OTHER_MESSAGE.get('Raddress', [AMBUSH]*4)[3]
+            return f'{address2}\"{name}\"{address3}'
+
+    else:  # duplicate 'of except TheContactIsNotExist'
+        return WARNING_MESSAGE.get('unknown name', AMBUSH)
+
+
+@input_error
 def handler_remove_birthday(user_command: List[str], contact_dictionary: AddressBook, path_file: str) -> str:
     """"remove birthday ...": The bot remove a birthday record from contact in contact dictionary 
     and save it in file(path_file). Instead of ... the user enters the name.
@@ -476,7 +618,7 @@ def handler_remove_birthday(user_command: List[str], contact_dictionary: Address
 
             contact_dictionary[name].remove_birthday()
 
-            if address_book_saver(contact_dictionary, path_file):
+            if SaveTheBook().save_book(contact_dictionary, path_file):
                 return OTHER_MESSAGE.get('deleting field', [AMBUSH])[0]
             else:
                 return WARNING_MESSAGE.get('unsuccessful save', AMBUSH)
@@ -512,7 +654,7 @@ def handler_remove_details(user_command: List[str], contact_dictionary: AddressB
             if not verdict[0]:
                 return verdict[1]
 
-            if address_book_saver(contact_dictionary, path_file):
+            if SaveTheBook().save_book(contact_dictionary, path_file):
                 return OTHER_MESSAGE.get('deleting field', [AMBUSH])[0]
             else:
                 return WARNING_MESSAGE.get('unsuccessful save', AMBUSH)
@@ -550,7 +692,7 @@ def handler_remove_email(user_command: List[str], contact_dictionary: AddressBoo
 
             if verdict:
 
-                if address_book_saver(contact_dictionary, path_file):
+                if SaveTheBook().save_book(contact_dictionary, path_file):
                     return OTHER_MESSAGE.get('deleting field', [AMBUSH])[0]
                 else:
                     return WARNING_MESSAGE.get('unsuccessful save', AMBUSH)
@@ -587,7 +729,7 @@ def handler_remove_nickname(user_command: List[str], contact_dictionary: Address
 
             contact_dictionary[name].remove_nickname()
 
-            if address_book_saver(contact_dictionary, path_file):
+            if SaveTheBook().save_book(contact_dictionary, path_file):
                 return OTHER_MESSAGE.get('deleting field', [AMBUSH])[0]
             else:
                 return WARNING_MESSAGE.get('unsuccessful save', AMBUSH)
@@ -624,7 +766,7 @@ def handler_remove_phone(user_command: List[str], contact_dictionary: AddressBoo
 
             if verdict:
 
-                if address_book_saver(contact_dictionary, path_file):
+                if SaveTheBook().save_book(contact_dictionary, path_file):
                     return OTHER_MESSAGE.get('deleting field', [AMBUSH])[0]
                 else:
                     return WARNING_MESSAGE.get('unsuccessful save', AMBUSH)
@@ -660,7 +802,7 @@ def handler_remove(user_command: List[str], contact_dictionary: AddressBook, pat
 
         contact_dictionary.remove_record(name)
 
-        if address_book_saver(contact_dictionary, path_file):
+        if SaveTheBook().save_book(contact_dictionary, path_file):
             return OTHER_MESSAGE.get('deleting successful', [AMBUSH])[0]
         else:
             return WARNING_MESSAGE.get('unsuccessful save', AMBUSH)
@@ -717,7 +859,7 @@ def secret_command(user_command: List[str], contact_dictionary: AddressBook, pat
     """"gen": The bot generate virtual persons with random data, only for testings. 
 
         Parameters:
-            user_command (List[str]): List of user command (name of user and phone(s)).
+            user_command (List[str]): List of user command (name of user and quantity).
             contact_dictionary (AddressBook): Instance of AddressBook.
             path_file (str): Is there path and filename of address book.
 
@@ -725,8 +867,13 @@ def secret_command(user_command: List[str], contact_dictionary: AddressBook, pat
             string(str): Answer for the user.
     """
     from random import randint, choice
+    try:
+        quantity = int(user_command[1]) if int(user_command[1]) > 0 else 24
+    except (IndexError, ValueError) as error:
+        # print(f'user command: {user_command[1]}, \n error: {repr(error)}')
+        quantity = 100
 
-    generators_names = [f'Name{item}' for item in range(22)]
+    generators_names = [f'Name{item}' for item in range(quantity)]
     for name in generators_names:
         handler_add(['add', name], contact_dictionary, path_file)
         if randint(0,1):
@@ -741,21 +888,207 @@ def secret_command(user_command: List[str], contact_dictionary: AddressBook, pat
             for _ in range(randint(1,3)):
                 domen = 'emaN'
                 handler_add_email(['add_email', name, f'{name}@{domen*randint(1,3)}.com.ua'], contact_dictionary, path_file)
+        if randint(0,1):
+            handler_add_address(['add_address', name, f'Kyiv City, the Independence Square {randint(1,38)}, app.{randint(1,12)}'], contact_dictionary, path_file)
    
-    if address_book_saver(contact_dictionary, path_file):
+    if SaveTheBook().save_book(contact_dictionary, path_file):
         return OTHER_MESSAGE.get('update successful', [AMBUSH])[0]
     else:
         return WARNING_MESSAGE.get('unsuccessful save', AMBUSH)
 
 
-ALL_COMMAND = {
+@input_error
+def handler_add_note(user_command: List[str], book: NoteBook, path_file: str) -> str:
+    """"add note ...": The bot create new record note in notebook 
+    and save it in file(path_file). Instead of ... the user enters the name for note.
+
+        Parameters:
+            user_command (List[str]): List of user command (name of note).
+            book (NoteBook): Instance of NoteBook.
+            path_file (str): Is there path and filename of notebook.
+
+        Returns:
+            string(str): Answer for the user.
+    """
+    name = user_command[1]
+
+    new_record = Note(name, ' '.join(user_command[2:]))
+
+    book.add_record(new_record)
+
+    if SaveTheBook().save_book(book, path_file):
+        return OTHER_MESSAGE.get('successful addition', [AMBUSH])[0]
+    else:
+        return WARNING_MESSAGE.get('unsuccessful save', AMBUSH)
+
+
+@input_error
+def handler_remove_note(user_command: List[str], book: NoteBook, path_file: str) -> str:
+    """"remove note...": The bot remove a record note in note-books 
+    and save it in file(path_file). Instead of ... the user enters the name for note.
+
+        Parameters:
+            user_command (List[str]): List of user command (name of note).
+            book (NoteBook): Instance of NoteBook.
+            path_file (str): Is there path and filename of notebook.
+
+        Returns:
+            string(str): Answer for the user.
+    """
+    name = user_command[1]
+
+    if book.get(name, None):
+
+        book.remove_record(name)
+
+        if SaveTheBook().save_book(book, path_file):
+            return OTHER_MESSAGE.get('deleting successful', [AMBUSH])[0]
+        else:
+            return WARNING_MESSAGE.get('unsuccessful save', AMBUSH)
+
+    else:
+        return WARNING_MESSAGE.get('unknown note', AMBUSH)
+
+
+@input_error
+def handler_change_note(user_command: List[str], book: NoteBook, path_file: str) -> str:
+    """"change note ...": The bot stores the new note of the existing 
+    data in NoteBook and save it in file(path_file).
+    Instead of ... the user enters the name, tag(s) note and new note text, 
+    necessarily with a space.
+
+        Parameters:
+            user_command (List[str]): List of user command (name of note).
+            book (NoteBook): Instance of NoteBook.
+            path_file (str): Is there path and filename of notebook.
+
+        Returns:
+            string(str): Answer for the user.
+    """
+    name = user_command[1]
+    
+    book[name].change_note()
+
+    if SaveTheBook().save_book(book, path_file):
+        return OTHER_MESSAGE.get('update successful', [AMBUSH])[0]
+    else:
+        return WARNING_MESSAGE.get('unsuccessful save', AMBUSH)
+
+
+@input_error
+def handler_show_notes(_, book: NoteBook, __) -> list:
+    """"show notes": The bot outputs all saved notes from notebook.
+
+        Parameters:
+            _: not matter (user_command (List[str]): List of user command).
+            book (NoteBook): Instance of NoteBook.
+            _a: not matter (path_file (str): Is there path and filename of note book).
+
+        Returns:
+            string(str): Answer for the user (list of string of all users).
+    """
+    all_list = [OTHER_MESSAGE.get('all list', [AMBUSH]*2)[1]]
+
+    for records in book.iterator(LIMIT_RECORDS_TO_DISPLAY):
+        volume = ''
+
+        for record in records:
+
+            # volume += forming_note_information(record)
+            volume += f'{record.name}; '
+
+        all_list.append(volume)
+
+    return all_list
+
+
+@input_error
+def handler_show_note(user_command: List[str], book: NoteBook, _=None) -> str:
+    """"show information about a specific note". With this command, the bot outputs
+    all contents from specific note (name, tags, text) to the console.
+
+        Parameters:
+            user_command (List[str]): List of user command (name of note).
+            book (NoteBook): Instance of NoteBook.
+            _: not matter (path_file (str): Is there path and filename of notebook).
+
+        Returns:
+            string(str): Answer for the user (string of information about user).
+    """
+    name = user_command[1]
+
+    return f'{book[name]}'
+
+
+def handler_sort(user_command: List[str], __=None, _=None) -> str:  # *args ?
+    """"sort...": The bot sorts files by category in the specified folder.
+        Example:
+            sort /home/user/junk
+
+        Parameters:
+            user_command (List[str]): List of user command (path for folder).
+            __: book (NoteBook): Instance of NoteBook.
+            _: path_file (str) - Is there path and filename of notebook.
+
+        Returns:
+            result (str): Answer for the user - result of sorting.
+    """ 
+    return junk_sorter.main(user_command[1])
+
+
+@input_error
+def handler_find_notes(user_command: List[str], book: NoteBook, _=None) -> list:
+    """"find notes...": The bot outputs a list of notes whose name or content 
+    matches the entered one or more(with an OR setting) string without space(' ').
+
+        Parameters:
+            user_command (List[str]): List of user command (string(s) for searching).
+            book (NoteBook): Instance of NoteBook.
+            _: path_file (str) - Is there path and filename of notebook.
+
+        Returns:
+            found_list (list): Answer for the user - list of string of found notes.
+    """ 
+    found_list = [OTHER_MESSAGE.get('found_notes', [AMBUSH])[0]]
+ 
+    for records in book.iterator(LIMIT_RECORDS_TO_DISPLAY): 
+        volume = ''
+
+        for record in records:
+
+            if find_notes(user_command[1:], record):
+
+                volume += f'{book[record.name]}'
+
+        found_list.append(volume)
+
+    return found_list
+
+
+def handler_sort_notes(__, book: NoteBook, _=None) -> list:
+    """"sort notes...": The bot outputs a list of notes whose tags most wanted .
+
+        Parameters:
+            __: user_command (List[str]): List of user command (string(s) for searching).
+            book (NoteBook): Instance of NoteBook.
+            _: path_file (str) - Is there path and filename of notebook.
+
+        Returns:
+            found_list (list): Answer for the user - list of string of found notes.
+    """ 
+    return book.sort_by_tags()
+
+
+ALL_COMMAND_ADDRESSBOOK = {
     '?': handler_help,
+    'add_address': handler_add_address,
     'add_birthday': handler_add_birthday,
     'add_details': handler_add_details,
     'add_email': handler_add_email,
     'add_nickname': handler_add_nickname,
     'add_phone': handler_add_phone,
     'add': handler_add,
+    'change_address': handler_change_address,
     'change_birthday': handler_change_birthday,
     'change_details': handler_change_details,
     'change_email': handler_change_email,
@@ -766,9 +1099,11 @@ ALL_COMMAND = {
     'find': handler_find,
     'gen': secret_command,
     'good_bye': handler_exit,
+    'happy_birthday': handler_happy_birthday,
     'hello': handler_hello,
     'help': handler_help,
     'phone': handler_phone,
+    'remmove_address': handler_remove_address,
     'remove_birthday': handler_remove_birthday,
     'remove_details': handler_remove_details,
     'remove_email': handler_remove_email,
@@ -776,10 +1111,27 @@ ALL_COMMAND = {
     'remove': handler_remove,
     'show_all': handler_show_all,
     'show': handler_show,
+    'sort': handler_sort,
     }
+ALL_COMMAND_NOTEBOOK = {
+    'add_note': handler_add_note,
+    'show_notes': handler_show_notes,
+    'show_note': handler_show_note,
+    'remove_note': handler_remove_note,
+    'change_note': handler_change_note,
+    'find_notes': handler_find_notes,
+    'sort_notes': handler_sort_notes,
+}
+ALL_COMMAND_FILESORTER = {
 
+}
 
-def main_handler(user_command: List[str], contact_dictionary: AddressBook, path_file: str) -> Union[str, list]:
+ALL_COMMAND = {'command_guesser': handler_command_guesser,}
+ALL_COMMAND.update(ALL_COMMAND_ADDRESSBOOK)
+ALL_COMMAND.update(ALL_COMMAND_NOTEBOOK)
+ALL_COMMAND.update(ALL_COMMAND_FILESORTER)
+
+def main_handler(user_command: List[str], contact_dictionary: Union[AddressBook, NoteBook], path_file: str) -> Union[str, list]:
     """All possible bot commands. Get a list of command and options, 
     a dictionary of contacts, and the path to an address book file. 
     Call a certain function and return a response to a command request.

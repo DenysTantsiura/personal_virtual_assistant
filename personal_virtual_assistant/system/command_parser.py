@@ -15,14 +15,13 @@ def parser(user_input: str) -> list:
             list command of user input (list): list of commands (list of strings).
     """
     # Example: aDD BirthDay 2000-11-12   ->   add~birthday~2000-11-12
-    command_line = user_input.strip().replace(' ', '~').lower()
+    command_line = user_input.strip().replace('   ', '~').replace('  ', ' ').replace(' ', '~').lower()
     # Example: ['remove~birthday', 'change~birthday' ... ]
     all_commands = sorted([el.replace('_', '~') for el in ALL_COMMAND], key=len)[::-1]
 
     for command in all_commands:
         command = str(command)  # Example: 'remove~birthday' ... 'add~birthday'
-        if command_line.startswith(command):  # Example: 'add~birthday'
-            #  ! command.replace('~', '_')  # Example: 'add_birthday'
+        if (command_line.startswith(command) and len(command_line)==len(command)) or command_line.startswith(f'{command}~'):   # if command_line.startswith(command):  # Example: 'add~birthday'
             # # Example: ['add_birthday'] + ['2000-11-12']
             return [command.replace('~', '_')] + [word for word in user_input[len(command):].split(' ') if word]
     # Example: ['unknown', 'command', 'abracadabra']

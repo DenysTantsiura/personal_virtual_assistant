@@ -1,4 +1,5 @@
 from collections import UserDict
+from datetime import datetime, timedelta
 
 from .constant_config import (
     AMBUSH,
@@ -16,6 +17,28 @@ class AddressBook(UserDict):
     def add_record(self, record) -> None:  # record: Record
         """Adds a new record to the address book dictionary."""
         self.data[record.name.value] = record
+    
+    def show_happy_birthday(self, meantime: int) -> list:
+        """Return the list of the expected birthday party."""
+        start_date = datetime.now().date()
+        finish_date = start_date + timedelta(days=int(meantime))  # main_validator catch
+        happy_users = []
+        for user in self.data:
+            if self.data[user].birthday:
+                hot_date = self.data[user].birthday.value.date()
+                # if the week is the last of the year:
+                delta_next_year = 1 if hot_date.month == (finish_date.year-start_date.year) else 0
+                try:
+                    hot_date = datetime(year=start_date.year + delta_next_year, month=hot_date.month, day=hot_date.day)
+
+                except ValueError:  # 29.02.YY
+                    hot_date = datetime(year=start_date.year + delta_next_year, month=hot_date.month, day=hot_date.day-1)\
+                            + timedelta(days=1)
+
+                if start_date <= hot_date.date() <= finish_date:
+                    happy_users.append(f'''{user}{OTHER_MESSAGE.get('Record', [AMBUSH]*3)[2]}{self.data[user].birthday}''')
+        # to dict and sorf for date? hot_date?
+        return happy_users
 
     def iterator(self, n_count: int) -> list:
         """Return(yield) of n_count records of all AddressBook."""

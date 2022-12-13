@@ -12,7 +12,7 @@ from .constant_config import (
     PREFORMATTING_PHONE,
     WARNING_MESSAGE, 
 )
-
+ 
 
 class Details(UserDict):
     """Details information of user."""
@@ -52,8 +52,9 @@ class Details(UserDict):
 class Field:  # superclass for all base fields
     """A base class with a simple field."""
 
-    def __init__(self):
+    def __init__(self, value):
         self._value = None
+        self.value = value
 
     def __str__(self):
         return f'{self.value}'
@@ -65,6 +66,11 @@ class Field:  # superclass for all base fields
     @value.setter
     def value(self, new_value: str):
         self._value = new_value
+
+
+class Address(Field):
+    """Class of address."""
+    ...
 
 
 class Birthday(Field):
@@ -98,8 +104,8 @@ class Email(Field):
 
 class Name(Field):
     """Class of username."""
-    def __init__(self):
-        super().__init__()
+    def __init__(self, value):
+        super().__init__(value)
         self._nickname = None
 
     @property
@@ -151,12 +157,13 @@ class Record:
     """Record class of users information."""
 
     def __init__(self, name: str, *phones: str):
-        self.name = Name()
-        self.name.value = name
+        self.name = Name(name)
+        # self.name.value = name
         self.phones = []
         self.birthday = None
         self.emails = []
         self.details = Details()  # None  # class()
+        self.address = None
 
         if phones:
 
@@ -169,18 +176,28 @@ class Record:
         birthday_ = OTHER_MESSAGE.get('Record', [AMBUSH]*3)[2]
         email_ = OTHER_MESSAGE.get('Record', [AMBUSH]*4)[3]
         details_ = OTHER_MESSAGE.get('Record', [AMBUSH]*5)[4]
-        # related_ = OTHER_MESSAGE.get('Record', [AMBUSH]*6)[5]
+        address_ = OTHER_MESSAGE.get('Record', [AMBUSH]*6)[5]
 
         return f'{name_}{self.name}{phones_}{self.phones}{birthday_}'\
-            f'{self.birthday}{email_}{self.emails}{details_}{self.details}'\
-            f')'  # f'{related_}{self.related_info})'
+            f'{self.birthday}{address_}{self.address}{email_}{self.emails}'\
+            f'{details_}{self.details})'
+
+    def add_address(self, address: str) -> tuple:
+        """Adds a new entry for the user's name - address."""
+        if address:
+            self.address = Address(address)
+            return True,
+
+        else:
+            address0 = OTHER_MESSAGE.get('Raddress', [AMBUSH])[0]
+            return False, f'{address0}\"{address}\"'
 
     def add_birthday(self, birthday: str) -> tuple:
         """Adds a new entry for the user's birthday to the address book."""
         if not self.birthday:
 
-            self.birthday = Birthday()
-            self.birthday.value = birthday
+            self.birthday = Birthday(birthday)
+            # self.birthday.value = birthday
 
             return True,
 
@@ -201,8 +218,8 @@ class Record:
 
     def add_phone(self, phone_new: str) -> bool:
         """Adds a new entry for the user's phone to the address book."""
-        phone_new1 = Phone()
-        phone_new1.value = phone_new
+        phone_new1 = Phone(phone_new)
+        # phone_new1.value = phone_new
 
         for phone in self.phones:
 
@@ -219,8 +236,8 @@ class Record:
     
     def add_email(self, email_new: str) -> bool:
         """Adds a new entry for the user's email to the address book."""
-        email_new1 = Email()
-        email_new1.value = email_new
+        email_new1 = Email(email_new)
+        # email_new1.value = email_new
 
         for email in self.emails:
 
@@ -235,6 +252,16 @@ class Record:
 
         return True
 
+    def change_address(self, new_address: str) -> tuple:
+        """Modify an existing user's address entry in the address book."""
+        if new_address:
+            self.address = Address(new_address)
+            return True,
+
+        else:
+            address0 = OTHER_MESSAGE.get('Raddress', [AMBUSH])[0]
+            return False, f'{address0}\"{new_address}\"'
+
     def change_birthday(self, birthday: str) -> tuple:
         """Modify an existing user's birthday entry in the address book."""
         if not self.birthday:
@@ -245,11 +272,11 @@ class Record:
 
         else:
 
-            self.birthday = Birthday()
-            self.birthday.value = birthday
+            self.birthday = Birthday(birthday)
+            # self.birthday.value = birthday
 
             return True,
-    
+
     def change_nickname(self, new_nickname: str) -> tuple:
         """Modify an existing user's nickname entry in the address book."""
         if new_nickname:
@@ -282,8 +309,8 @@ class Record:
         for index, phone in enumerate(self.phones):
 
             if phone.value == phone_to_change:
-                phone_new_to = Phone()
-                phone_new_to.value = phone_new
+                phone_new_to = Phone(phone_new)
+                # phone_new_to.value = phone_new
                 self.phones.remove(phone)
                 self.phones.insert(index, phone_new_to)
 
@@ -309,8 +336,8 @@ class Record:
         for index, email in enumerate(self.emails):
 
             if email.value == email_to_change:
-                email_new_to = Email()
-                email_new_to.value = email_new
+                email_new_to = Email(email_new)
+                # email_new_to.value = email_new
                 self.emails.remove(email)
                 self.emails.insert(index, email_new_to)
 
@@ -335,6 +362,12 @@ class Record:
                 return (user_day.date() - datetime.now().date()).days
 
             return days_left.days
+
+    def remove_address(self) -> Union[bool, None]:
+        """Deleting a address entry from a user entry in the address book."""
+        if self.address:
+            self.address = None
+            return True
 
     def remove_birthday(self) -> Union[bool, None]:
         """Deleting a birthday entry from a user entry in the address book."""

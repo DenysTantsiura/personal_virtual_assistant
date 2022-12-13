@@ -11,6 +11,7 @@ from .constant_config import (
     WARNING_MESSAGE, 
 )
 from .except_classes import (
+    AnIllogicalLimit,
     InvalidBirthday,
     InvalidBirthdayEntry,
     NoAddressBook,
@@ -21,6 +22,7 @@ from .except_classes import (
     TheEmailIsIncorrect,
     TheNameAnd2EmailsAreMissing,
     TheNameAnd2PhonesAreMissing,
+    TheNameAndAddressAreMissing,
     TheNameAndBirthdayAreMissing,
     TheNameAndEmailAreMissing,
     TheNameAndNicknameAreMissing,
@@ -29,7 +31,12 @@ from .except_classes import (
     TheNameIsMissing,
     TheNameIsOmitted,
     ThePhoneIsIncorrect,
+    NoEndDay,
+    NoNoteBook,
+    TheNoteNameIsMissing,
+    TheNoteDuplicate,
 )
+from .note_book import NoteBook
 
 
 def validation_add_details(user_command: list, contact_dictionary: AddressBook) -> None:
@@ -134,6 +141,20 @@ def validation_add(user_command: list, contact_dictionary: AddressBook) ->\
 
         if phone_count < len(user_command[2:]):  # not phone_count:
             raise ThePhoneIsIncorrect
+
+
+def validation_address(user_command: list, contact_dictionary: AddressBook) -> None:
+    """Check the input parameters. Raise exception if it is detected."""
+    name = user_command[1] if len(user_command) > 1 else None
+
+    if not contact_dictionary:
+        raise NoAddressBook 
+
+    if len(user_command) < 3:  # or not name:
+        raise TheNameAndAddressAreMissing
+
+    if name[0].isdigit() or not name[0].isalpha():
+        raise TheNameIsIncorrect
 
 
 def validation_birthday(user_command: list, contact_dictionary: AddressBook) -> None:
@@ -265,6 +286,20 @@ def validation_find(user_command: list, contact_dictionary: AddressBook) -> None
         raise NoSearchQuery
 
 
+def validation_happy_birthday(user_command: list, contact_dictionary: AddressBook) -> None:
+    """Check the input parameters. Return a message (str) about a discrepancy if it is detected."""
+    end_day = user_command[1] if len(user_command) > 1 else None
+
+    if not contact_dictionary:
+        raise NoAddressBook
+
+    if not end_day:
+        raise NoEndDay
+    
+    if 1 > int(end_day) > 90:
+        raise AnIllogicalLimit
+
+
 def validation_nickname(user_command: list, contact_dictionary: AddressBook) -> None:
     """Check the input parameters. Raise exception if it is detected."""
     name = user_command[1] if len(user_command) > 1 else None
@@ -291,6 +326,23 @@ def validation_phone(user_command: list, contact_dictionary: AddressBook) -> Non
 
     if name[0].isdigit() or not name[0].isalpha():
         raise TheNameIsIncorrect
+
+
+def validation_remove_address(user_command: list, contact_dictionary: AddressBook) -> None:
+    """Check the input parameters. Return a message (str) about a discrepancy if it is detected."""
+    name = user_command[1] if len(user_command) > 1 else None
+
+    if not contact_dictionary:
+        raise NoAddressBook
+
+    if not name:  # len(user_command) < 2:
+        raise TheNameIsMissing
+
+    if name[0].isdigit() or not name[0].isalpha():
+        raise TheNameIsIncorrect
+
+    if name not in contact_dictionary:
+        raise TheContactIsNotExist
 
 
 def validation_remove_birthday(user_command: list, contact_dictionary: AddressBook) -> None:
@@ -429,13 +481,76 @@ def validation_show(user_command: list, contact_dictionary: AddressBook) -> None
         raise TheNameIsIncorrect
 
 
+def validation_add_note(user_command: list, book: NoteBook) -> None:
+    """Check the input parameters. Return a message (str) about a discrepancy if it is detected."""
+    name = user_command[1] if len(user_command) > 1 else None
+
+    if not name:
+        raise TheNoteNameIsMissing
+    
+    if book.get(name, None):
+        raise TheNoteDuplicate
+
+def validation_remove_note(user_command: list, book: NoteBook) -> None:
+    """Check the input parameters. Return a message (str) about a discrepancy if it is detected."""
+    name = user_command[1] if len(user_command) > 1 else None
+
+    if not book:
+        raise NoNoteBook
+
+    if not name:
+        raise TheNoteNameIsMissing
+
+
+def validation_change_note(user_command: list, book: NoteBook) -> None:
+    """Check the input parameters. Return a message (str) about a discrepancy if it is detected."""
+    name = user_command[1] if len(user_command) > 1 else None
+
+    if not book:
+        raise NoNoteBook
+
+    if not name:
+        raise TheNoteNameIsMissing
+
+
+def validation_show_notes(_, book: NoteBook) -> None:
+    """Check the input parameters. Return a message (str) about a discrepancy if it is detected."""
+
+    if not book:
+        raise NoNoteBook
+
+
+def validation_show_note(user_command: list, book: NoteBook) -> None:
+    """Check the input parameters. Return a message (str) about a discrepancy if it is detected."""
+    name = user_command[1] if len(user_command) > 1 else None
+
+    if not book:
+        raise NoNoteBook
+
+    if not name:
+        raise TheNoteNameIsMissing
+
+
+def validation_find_notes(user_command: list, book: NoteBook) -> None:
+    """Check the input parameters. Return a message (str) about a discrepancy if it is detected."""
+    query = user_command[1] if len(user_command) > 1 else None
+
+    if not book:
+        raise NoNoteBook
+
+    if not query:
+        raise NoSearchQuery
+
+
 VALIDATION_FUNCTIONS = {
+            'handler_add_address': validation_address,
             'handler_add_birthday': validation_birthday,
             'handler_add_details': validation_add_details,
             'handler_add_email': validation_add_email,
             'handler_add_nickname': validation_nickname,
             'handler_add_phone': validation_add_phone,
             'handler_add': validation_add,
+            'handler_change_address': validation_address,
             'handler_change_birthday': validation_birthday,
             'handler_change_details': validation_change_details,
             'handler_change_email': validation_change_email,
@@ -443,7 +558,9 @@ VALIDATION_FUNCTIONS = {
             'handler_change': validation_change,
             'handler_email': validation_email,
             'handler_find': validation_find,
+            'handler_happy_birthday': validation_happy_birthday,
             'handler_phone': validation_phone,
+            'handler_remove_address': validation_remove_address,
             'handler_remove_birthday': validation_remove_birthday,
             'handler_remove_details': validation_remove_details,
             'handler_remove_email': validation_remove_email,
@@ -452,5 +569,11 @@ VALIDATION_FUNCTIONS = {
             'handler_remove': validation_remove,
             'handler_show_all': validation_show_all,
             'handler_show': validation_show,
+            'handler_add_note': validation_add_note,
+            'handler_remove_note': validation_remove_note,
+            'handler_change_note': validation_change_note,
+            'handler_show_notes': validation_show_notes,
+            'handler_show_note': validation_show_note,
+            'handler_find_notes': validation_find_notes,
             # 'unknown': lambda *_: raise UnknownCommand,  # 'Unknown command...'
         }
