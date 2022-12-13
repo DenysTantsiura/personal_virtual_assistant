@@ -21,7 +21,7 @@ class AddressBook(UserDict):
     def show_happy_birthday(self, meantime: int) -> list:
         """Return the list of the expected birthday party."""
         start_date = datetime.now().date()
-        finish_date = start_date + timedelta(days=int(meantime))  # main_validator catch
+        finish_date = start_date + timedelta(days=meantime)  # main_validator catch
         happy_users = []
         for user in self.data:
             if self.data[user].birthday:
@@ -32,12 +32,15 @@ class AddressBook(UserDict):
                     hot_date = datetime(year=start_date.year + delta_next_year, month=hot_date.month, day=hot_date.day)
 
                 except ValueError:  # 29.02.YY
-                    hot_date = datetime(year=start_date.year + delta_next_year, month=hot_date.month, day=hot_date.day-1)\
-                            + timedelta(days=1)
+                    hot_date = datetime(
+                        year=start_date.year + delta_next_year,
+                        month=hot_date.month,
+                        day=hot_date.day-1) + timedelta(days=1)
 
                 if start_date <= hot_date.date() <= finish_date:
-                    happy_users.append(f'''{user}{OTHER_MESSAGE.get('Record', [AMBUSH]*3)[2]}{self.data[user].birthday}''')
-        # to dict and sorf for date? hot_date?
+                    happy_users.append(
+                        f'''{user}{OTHER_MESSAGE.get('Record', [AMBUSH]*3)[2]}{self.data[user].birthday}''')
+        # to dict and sort for date? hot_date?
         return happy_users
 
     def iterator(self, n_count: int) -> list:

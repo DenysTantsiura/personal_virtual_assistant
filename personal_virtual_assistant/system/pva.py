@@ -3,15 +3,15 @@ import sys
 from typing import NoReturn, Union
 
 
-from system.address_book import AddressBook
-from system.handlers import (
+from .address_book import AddressBook
+from .handlers import (
     main_handler,
     ALL_COMMAND_ADDRESSBOOK,
     ALL_COMMAND_NOTEBOOK,
     ALL_COMMAND_FILESORTER,
 )
-from system.command_parser import parser
-from system.constant_config import (
+from .command_parser import parser
+from .constant_config import (
     AMBUSH, 
     DEFAULT_FILE_ADDRESS_BOOK, 
     OTHER_MESSAGE, 
@@ -19,7 +19,7 @@ from system.constant_config import (
     DEFAULT_FILE_NOTE_BOOK, 
 )
 from .note_book import NoteBook
-from system.serialization import LoadBook, OpenBook
+from .serialization import LoadBook, OpenBook
 
 
 class InterfaceInput(ABC):
@@ -107,11 +107,11 @@ class PVA:
             elif user_request[0] in ALL_COMMAND_NOTEBOOK:
                 bot_answer_result = OutputAnswer().show_out(user_request, self.note_book, self.path_file_notes)
             elif user_request[0] in ALL_COMMAND_FILESORTER:
-                bot_answer_result = OutputAnswer().show_out(user_request, None, None)
+                bot_answer_result = OutputAnswer().show_out(user_request, None, '')
             else:
                 # bot_answer_result = OutputAnswer().show_out(user_request, self.contact_dictionary, self.path_file)
                 user_request = ['command_guesser'] + user_request
-                bot_answer_result = OutputAnswer().show_out(user_request, None, None)
+                bot_answer_result = OutputAnswer().show_out(user_request, None, '')
 
             if not bot_answer_result:
                 break

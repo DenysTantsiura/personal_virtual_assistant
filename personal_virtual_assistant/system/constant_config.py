@@ -25,8 +25,7 @@ ERROR_MESSAGE = {
 OTHER_MESSAGE = {
     'Record': ['\n\nRecord(Name: ', '; Phones: ', '; Birthday: ', ';\n\te-mail: ', ';\n\t details: ',
                ':\nAddress: ', ],
-    'Raddress': ['Address is missing!', '. You can change it.', 'Address not specified for ',
-                  '. You can add it.', ],
+    'Raddress': ['Address is missing!', '. You can change it.', 'Address not specified for ', '. You can add it.', ],
     'RBirthday': ['Birthday already recorded for ', '. You can change it.', 'Birthday not specified for ',
                   '. You can add it.', ],
     'RDetails': ['This details already recorded for ', '. You can change it.', 'This details not specified for ',
@@ -37,7 +36,8 @@ OTHER_MESSAGE = {
     'next_page': ['Press Enter for next Volume... ', ],
     'Bye': ['Good bye!', ],
     'START': ['Can I help you?\n', ],
-    'Unknown': ['It is unclear. Unknown command...', 'Nothing even to offer.', 'Command with error? Maybe something from these knowns commands?:\n', ],
+    'Unknown': ['It is unclear. Unknown command...', 'Nothing even to offer.',
+                'Command with error? Maybe something from these knowns commands?:\n', ],
     'Hello': ['Hello! So...\n', ],
     'successful addition': ['A record(s) have been added.\n', ],
     'update successful': ['A record have been added. Address book file has been saved.', ],
@@ -55,7 +55,7 @@ OTHER_MESSAGE = {
     'details': ['Current note ', '...nothing...', 'This note already exists.', 'This note is missing in records.', ],
     'NBook': ['NoteBook(Records:', ],
     'Note': ['\nNote: ', 'Tags: ', 'Contents: ', ],
-    'Rtags': ['Corect tags added: ', 'Wrong tags (non start from #): ',],
+    'Rtags': ['Corect tags added: ', 'Wrong tags (non start from #): ', ],
     'Nchange': ['Enter new name for note:\n', 'Enter new tag(s) for note:\n', 'Enter new text for note:\n', ],
     'found_notes': ['Entries found in your notebook:', ', tag(s): ', 'Note: ', ],
 }

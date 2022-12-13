@@ -130,7 +130,7 @@ from .validators import (
     validation_show_all,
     validation_show,
 )
-
+from personal_virtual_assistant.personal_virtual_assistant.junk_sorter import junk_sorter
 
 __all__ = [
     'Address',
@@ -181,11 +181,10 @@ __all__ = [
     'handler_show_all',
     'handler_show',
     'handler_sort',
-    'helper_try_load_file',
-    'helper_try_open_file',
     'input_error',
     'InvalidBirthday',
     'InvalidBirthdayEntry',
+    'junk_sorter',
     'LIMIT_RECORDS_TO_DISPLAY',
     'LoadBook',
     'main_handler',

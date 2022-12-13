@@ -364,7 +364,7 @@ class Record:
             return days_left.days
 
     def remove_address(self) -> Union[bool, None]:
-        """Deleting a address entry from a user entry in the address book."""
+        """Deleting an address entry from a user entry in the address book."""
         if self.address:
             self.address = None
             return True

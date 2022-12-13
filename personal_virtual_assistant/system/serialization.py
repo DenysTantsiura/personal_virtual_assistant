@@ -87,7 +87,8 @@ class LoadBook(LoadFromFile):
             book_instance = book()
 
         while os.path.exists(self.path_file):
-            self.path_file = os.path.join(os.path.dirname(self.path_file), TO_NEXT_FILE_NAME + os.path.basename(self.path_file))
+            self.path_file = os.path.join(os.path.dirname(self.path_file), TO_NEXT_FILE_NAME +
+                                          os.path.basename(self.path_file))
 
         return book_instance, self.path_file
 
@@ -103,7 +104,7 @@ class OpenBook(CheckingFile):
         Return unoccupied name of file (string).
 
             Parameters:
-                path_file (str): Is proposed name of file.
+                self.path_file (str): Is proposed name of file.
 
             Returns:
                 path_file (str): Unoccupied name of file.
@@ -112,7 +113,8 @@ class OpenBook(CheckingFile):
 
             while os.path.isdir(self.path_file):
 
-                self.path_file = os.path.join(os.path.dirname(self.path_file), TO_NEXT_FILE_NAME + os.path.basename(self.path_file))
+                self.path_file = os.path.join(os.path.dirname(self.path_file), TO_NEXT_FILE_NAME +
+                                              os.path.basename(self.path_file))
 
         return self.path_file
 

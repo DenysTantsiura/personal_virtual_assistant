@@ -7,14 +7,14 @@ from .constant_config import (
 
 
 class NoteBook(UserDict):
-    """A class of note-book."""
+    """A class of notebook."""
 
     def __str__(self) -> str:
-        nbook0 = OTHER_MESSAGE.get('NBook', [AMBUSH])[0]
-        return f'{nbook0}{list(self.data.keys())})'
+        notebook0 = OTHER_MESSAGE.get('NBook', [AMBUSH])[0]
+        return f'{notebook0}{list(self.data.keys())})'
 
     def add_record(self, record) -> None:  # record: Record
-        """Adds a new record to the note book dictionary."""
+        """Adds a new record to the notebook dictionary."""
         self.data[record.name] = record
 
     def iterator(self, n_count: int) -> list:
@@ -38,11 +38,11 @@ class NoteBook(UserDict):
             current_value += n_count
 
     def remove_record(self, name: str) -> None:
-        """Remove a record from the note book dictionary."""
+        """Remove a record from the notebook dictionary."""
         self.data.pop(name)
 
     def sort_by_tags(self) -> list:
-        """Rreturn list of notenames sorted by tags."""
+        """Return list of note-names sorted by tags."""
         tags = []
         for note in self.data.values():
             tags.extend(note.tags)

@@ -1,18 +1,19 @@
 from typing import List
 
 from .classes_address_book import Record
+from .class_note import Note
 from .constant_config import (
     AMBUSH,
     OTHER_MESSAGE,
 )
 
 
-def find_notes(search_strings: List[str], record: Record) -> bool:
+def find_notes(search_strings: List[str], record: Note) -> bool:
     """Check a record for matching the search strings.
 
         Parameters:
             search_strings (List[str]): The data in the list rows in the user's search query.
-            record (Record): Record - Note.
+            record (Note): Record - Note.
 
         Returns:
             True or False (bool): Search result (Search success rate).
@@ -38,34 +39,11 @@ def find_users(search_strings: List[str], record: Record) -> bool:
         Returns:
             True or False (bool): Search result (Search success rate).
     """
-    name = f'{record.name}'
-
     for search_string in search_strings:
 
         if forming_user_information(record).find(search_string) >= 0:
 
             return True
-
-        # if name.find(search_string) >= 0:
-
-        #     return True
-
-        # if record.birthday:
-
-        #     birthday = f'{record.birthday}'
-
-        #     if birthday.find(search_string) >= 0:
-
-        #         return True
-
-        # for phone in record.phones:
-        #     candidate = f"{phone.value}"
-        #     candidate = candidate.replace(
-        #         '-', '').replace('+', '').replace('(', '').replace(')', '')
-
-        #     if candidate.find(search_string.replace('-', '').replace('+', '').replace('(', '').replace(')', '')) >= 0:
-
-        #         return True
 
     return False
 

@@ -491,6 +491,7 @@ def validation_add_note(user_command: list, book: NoteBook) -> None:
     if book.get(name, None):
         raise TheNoteDuplicate
 
+
 def validation_remove_note(user_command: list, book: NoteBook) -> None:
     """Check the input parameters. Return a message (str) about a discrepancy if it is detected."""
     name = user_command[1] if len(user_command) > 1 else None

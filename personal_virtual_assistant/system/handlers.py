@@ -14,7 +14,8 @@ from .main_validator import input_error
 from .note_book import NoteBook
 from .serialization import SaveTheBook
 
-from junk_sorter import junk_sorter
+from personal_virtual_assistant.personal_virtual_assistant.junk_sorter import junk_sorter
+
 
 @input_error
 def handler_add_address(user_command: List[str], contact_dictionary: AddressBook, path_file: str) -> str:
@@ -508,6 +509,7 @@ def handler_find(user_command: List[str], contact_dictionary: AddressBook, _=Non
 
     return found_list
 
+
 @input_error
 def handler_happy_birthday(user_command: List[str], contact_dictionary: AddressBook, _=None) -> list:
     """"happy birthday ...": The bot outputs a list of users whose the birthday will be celebrated 
@@ -524,7 +526,7 @@ def handler_happy_birthday(user_command: List[str], contact_dictionary: AddressB
         Returns:
             found_list (list): Answer for the user - list of string of found users with happy birthday.
     """ 
-    return contact_dictionary.show_happy_birthday(user_command[1])
+    return contact_dictionary.show_happy_birthday(int(user_command[1]))
 
 
 def handler_hello(*_) -> str:
@@ -566,7 +568,7 @@ def handler_phone(user_command: List[str], contact_dictionary: AddressBook, _=No
 
 @input_error
 def handler_remove_address(user_command: List[str], contact_dictionary: AddressBook, path_file: str) -> str:
-    """"remove address ...": The bot remove a address record from contact in contact dictionary 
+    """"remove address ...": The bot remove an address record from contact in contact dictionary
     and save it in file(path_file). Instead of ... the user enters the name.
 
         Parameters:
@@ -670,7 +672,7 @@ def handler_remove_details(user_command: List[str], contact_dictionary: AddressB
 
 @input_error
 def handler_remove_email(user_command: List[str], contact_dictionary: AddressBook, path_file: str) -> str:
-    """"remove email ...": The bot remove a email record from contact in contact dictionary 
+    """"remove email ...": The bot remove an email record from contact in contact dictionary
     and save it in file(path_file). Instead of ... the user enters the name and email(s), 
     necessarily with a space.
 
@@ -818,7 +820,7 @@ def handler_show_all(_, contact_dictionary: AddressBook, __) -> list:
         Parameters:
             _: not matter (user_command (List[str]): List of user command).
             contact_dictionary (AddressBook): Instance of AddressBook.
-            _a: not matter (path_file (str): Is there path and filename of address book).
+            __: not matter (path_file (str): Is there path and filename of address book).
 
         Returns:
             string(str): Answer for the user (list of string of all users).
@@ -869,27 +871,31 @@ def secret_command(user_command: List[str], contact_dictionary: AddressBook, pat
     from random import randint, choice
     try:
         quantity = int(user_command[1]) if int(user_command[1]) > 0 else 24
-    except (IndexError, ValueError) as error:
-        # print(f'user command: {user_command[1]}, \n error: {repr(error)}')
+    except (IndexError, ValueError):  # as error:
+        # print(f'User command: {user_command[1]}, \n error: {repr(error)}')
         quantity = 100
 
     generators_names = [f'Name{item}' for item in range(quantity)]
     for name in generators_names:
         handler_add(['add', name], contact_dictionary, path_file)
-        if randint(0,1):
+        if randint(0, 1):
             handler_add_nickname(['add_nickname', name, name+name[::-1]], contact_dictionary, path_file)
-        if randint(0,1):    
-            handler_add_birthday(['add_birthday', name, f'{randint(1970,2002)}-{randint(1,12)}-{randint(1,28)}'], contact_dictionary, path_file)
-        if randint(0,1): 
-            for _ in range(randint(1,5)):
-                numder_ = str(randint(0,9)) * 7
-                handler_add_phone(['add_phone', name, f'+380{choice([63,67,50,73,91,93,97])}{numder_}'], contact_dictionary, path_file)
-        if randint(0,1): 
-            for _ in range(randint(1,3)):
+        if randint(0, 1):
+            handler_add_birthday(['add_birthday', name, f'{randint(1970,2002)}-{randint(1,12)}-{randint(1,28)}'],
+                                 contact_dictionary, path_file)
+        if randint(0, 1):
+            for _ in range(randint(1, 5)):
+                numder_ = str(randint(0, 9)) * 7
+                handler_add_phone(['add_phone', name, f'+380{choice([63,67,50,73,91,93,97])}{numder_}'],
+                                  contact_dictionary, path_file)
+        if randint(0, 1):
+            for _ in range(randint(1, 3)):
                 domen = 'emaN'
-                handler_add_email(['add_email', name, f'{name}@{domen*randint(1,3)}.com.ua'], contact_dictionary, path_file)
-        if randint(0,1):
-            handler_add_address(['add_address', name, f'Kyiv City, the Independence Square {randint(1,38)}, app.{randint(1,12)}'], contact_dictionary, path_file)
+                handler_add_email(['add_email', name, f'{name}@{domen*randint(1,3)}.com.ua'],
+                                  contact_dictionary, path_file)
+        if randint(0, 1):
+            handler_add_address(['add_address', name, f'Kyiv City, the Independence Square {randint(1,38)}, '
+                                                      f'app.{randint(1,12)}'], contact_dictionary, path_file)
    
     if SaveTheBook().save_book(contact_dictionary, path_file):
         return OTHER_MESSAGE.get('update successful', [AMBUSH])[0]
@@ -924,7 +930,7 @@ def handler_add_note(user_command: List[str], book: NoteBook, path_file: str) ->
 
 @input_error
 def handler_remove_note(user_command: List[str], book: NoteBook, path_file: str) -> str:
-    """"remove note...": The bot remove a record note in note-books 
+    """"remove note...": The bot remove a record note in notebooks
     and save it in file(path_file). Instead of ... the user enters the name for note.
 
         Parameters:
@@ -982,7 +988,7 @@ def handler_show_notes(_, book: NoteBook, __) -> list:
         Parameters:
             _: not matter (user_command (List[str]): List of user command).
             book (NoteBook): Instance of NoteBook.
-            _a: not matter (path_file (str): Is there path and filename of note book).
+            __: not matter (path_file (str): Is there path and filename of notebook).
 
         Returns:
             string(str): Answer for the user (list of string of all users).
@@ -1126,12 +1132,14 @@ ALL_COMMAND_FILESORTER = {
 
 }
 
-ALL_COMMAND = {'command_guesser': handler_command_guesser,}
+ALL_COMMAND = {'command_guesser': handler_command_guesser, }
 ALL_COMMAND.update(ALL_COMMAND_ADDRESSBOOK)
 ALL_COMMAND.update(ALL_COMMAND_NOTEBOOK)
 ALL_COMMAND.update(ALL_COMMAND_FILESORTER)
 
-def main_handler(user_command: List[str], contact_dictionary: Union[AddressBook, NoteBook], path_file: str) -> Union[str, list]:
+
+def main_handler(user_command: List[str], contact_dictionary: Union[AddressBook, NoteBook],
+                 path_file: str) -> Union[str, list]:
     """All possible bot commands. Get a list of command and options, 
     a dictionary of contacts, and the path to an address book file. 
     Call a certain function and return a response to a command request.

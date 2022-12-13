@@ -1,8 +1,3 @@
-from collections import UserDict
-from datetime import datetime
-import re
-from typing import Union
-
 from .constant_config import (
     AMBUSH,
     OTHER_MESSAGE, 
@@ -39,29 +34,31 @@ class Note:
                     correct_tags.append(word) 
                 else:
                     wrong_tags.append(word)
+            tags0 = OTHER_MESSAGE.get('Rtags', [AMBUSH])[0]
+            tags1 = OTHER_MESSAGE.get('Rtags', [AMBUSH] * 2)[1]
+            if wrong_tags:
+                return False, f'{tags0}: {correct_tags}\n{tags1}{wrong_tags}'
             return True, (correct_tags, wrong_tags)
 
-        tags0 = OTHER_MESSAGE.get('Rtags', [AMBUSH])[0]
-        tags1 = OTHER_MESSAGE.get('Rtags', [AMBUSH]*2)[1]
-        return False, f'{tags0}: {correct_tags}\n{tags1}{wrong_tags}'
+        return False, f''
     
     def change_note(self) -> tuple:
         """Show for change note, and apply the changes."""
         print(self)  # self.__str__()
-        self.name = self.inputWdefault(OTHER_MESSAGE.get('Nchange', [AMBUSH])[0], self.name)
+        self.name = self.input_with_default(OTHER_MESSAGE.get('Nchange', [AMBUSH])[0], self.name)
 
         old_tags = self.tags[:]
         self.tags = []
-        for tag in self.inputWdefault(OTHER_MESSAGE.get('Nchange', [AMBUSH]*2)[1], ' '.join(old_tags)).split(' '):
+        for tag in self.input_with_default(OTHER_MESSAGE.get('Nchange', [AMBUSH]*2)[1], ' '.join(old_tags)).split(' '):
             if tag.startswith('#'):
                 self.tags.append(tag)
 
-        self.text = self.inputWdefault(OTHER_MESSAGE.get('Nchange', [AMBUSH]*3)[2], self.text)
+        self.text = self.input_with_default(OTHER_MESSAGE.get('Nchange', [AMBUSH]*3)[2], self.text)
         
         return True,
 
     @staticmethod
-    def inputWdefault(prompt: str, default: str) -> str:
+    def input_with_default(prompt: str, default: str) -> str:
         bck = chr(8) * len(default)
         result = input(f'{prompt}{default}' + bck)
         return result or default

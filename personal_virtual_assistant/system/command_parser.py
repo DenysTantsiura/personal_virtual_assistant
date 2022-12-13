@@ -21,7 +21,8 @@ def parser(user_input: str) -> list:
 
     for command in all_commands:
         command = str(command)  # Example: 'remove~birthday' ... 'add~birthday'
-        if (command_line.startswith(command) and len(command_line)==len(command)) or command_line.startswith(f'{command}~'):   # if command_line.startswith(command):  # Example: 'add~birthday'
+        if (command_line.startswith(command) and len(command_line) == len(command)) or \
+                command_line.startswith(f'{command}~'):   # if command_line.startswith(command):  # Example: 'add~phone'
             # # Example: ['add_birthday'] + ['2000-11-12']
             return [command.replace('~', '_')] + [word for word in user_input[len(command):].split(' ') if word]
     # Example: ['unknown', 'command', 'abracadabra']

@@ -46,7 +46,8 @@ def input_error(handler):
             exception_function(function): Exception function for handler functions.
 
     """
-    def exception_function(user_command: list, book_instance: Union[AddressBook, NoteBook], path_file: str) -> Union[str, list]:
+    def exception_function(user_command: list, book_instance: Union[AddressBook, NoteBook],
+                           path_file: str) -> Union[str, list]:
         """Exception function for handler functions."""
         try:
             VALIDATION_FUNCTIONS[handler.__name__](user_command, book_instance)

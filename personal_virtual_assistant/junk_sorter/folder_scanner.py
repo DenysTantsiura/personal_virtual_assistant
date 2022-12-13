@@ -1,8 +1,8 @@
 import sys
 from pathlib import Path
 
-from junk_sorter.extensions import DATABASE_OF_EXTENSIONS
-from junk_sorter import string_normalize
+from .extensions import DATABASE_OF_EXTENSIONS
+import string_normalize
 
 FOLDERS = []
 EXTENSIONS = set()
